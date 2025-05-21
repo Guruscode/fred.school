@@ -192,13 +192,13 @@ const Apply: React.FC = () => {
   const getInputClass = (fieldName: string) => {
     return `mt-1 block w-full p-3 border ${
       errors[fieldName] ? 'border-red-300 bg-red-50' : 'border-gray-200'
-    } rounded-lg transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none`;
+    } rounded-lg transition-all duration-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none`;
   };
 
   // Get step status class
   const getStepStatusClass = (stepNumber: number) => {
     if (step === stepNumber) {
-      return 'bg-blue-600 text-white';
+      return 'bg-green-600 text-white';
     } else if (step > stepNumber) {
       return 'bg-green-500 text-white';
     }
@@ -209,7 +209,7 @@ const Apply: React.FC = () => {
     <div className="min-h-screen bg-gray-50 font-sans">
       <div className="container mx-auto px-4 py-8 max-w-5xl">
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl p-8 text-white text-center shadow-lg mb-8">
+        <div className="bg-gradient-to-r from-pink-200 to-green-100 rounded-xl p-8 text-white text-center shadow-lg mb-8">
           <h1 className="text-4xl font-bold mb-2">Join Fredmind School</h1>
           <p className="text-lg font-light opacity-90">Complete your admission form to start your educational journey</p>
         </div>
@@ -229,7 +229,7 @@ const Apply: React.FC = () => {
                 >
                   {step > index + 1 ? <CheckCircle size={22} /> : item.icon}
                 </div>
-                <span className={`mt-2 text-sm font-medium ${step === index + 1 ? 'text-blue-600' : 'text-gray-600'}`}>
+                <span className={`mt-2 text-sm font-medium ${step === index + 1 ? 'text-green-600' : 'text-gray-600'}`}>
                   {item.label}
                 </span>
               </div>
@@ -242,7 +242,7 @@ const Apply: React.FC = () => {
           <div className={`bg-white shadow-lg rounded-xl p-6 md:p-8 ${animateStep ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-4'} transition-all duration-500`}>
             <div className="border-b border-gray-100 pb-4 mb-6">
               <h3 className="text-2xl font-semibold flex items-center text-gray-800">
-                <User size={22} className="mr-2 text-blue-500" /> Personal Information
+                <User size={22} className="mr-2 text-green-500" /> Personal Information
               </h3>
               <p className="text-gray-500 text-sm mt-1">Please provide your personal details to get started</p>
             </div>
@@ -516,7 +516,7 @@ const Apply: React.FC = () => {
               <div className="flex justify-end mt-8">
                 <button 
                   type="submit" 
-                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center font-medium shadow-md"
+                  className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 flex items-center font-medium shadow-md"
                 >
                   Next: Course Selection <ChevronRight size={18} className="ml-2" />
                 </button>
@@ -530,7 +530,7 @@ const Apply: React.FC = () => {
           <div className={`bg-white shadow-lg rounded-xl p-6 md:p-8 ${animateStep ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-4'} transition-all duration-500`}>
             <div className="border-b border-gray-100 pb-4 mb-6">
               <h3 className="text-2xl font-semibold flex items-center text-gray-800">
-                <Book size={22} className="mr-2 text-blue-500" /> Course Selection
+                <Book size={22} className="mr-2 text-green-500" /> Course Selection
               </h3>
               <p className="text-gray-500 text-sm mt-1">Select your preferred course and payment options</p>
             </div>
@@ -550,14 +550,14 @@ const Apply: React.FC = () => {
                         key={option.value} 
                         className={`border rounded-lg p-4 cursor-pointer transition-all ${
                           courseInfo.course === option.value 
-                            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200' 
-                            : 'border-gray-200 hover:border-blue-300'
+                            ? 'border-green-500 bg-green-50 ring-2 ring-green-200' 
+                            : 'border-gray-200 hover:border-green-300'
                         }`}
                         onClick={() => setCourseInfo(prev => ({ ...prev, course: option.value }))}
                       >
                         <div className="flex items-start">
                           <div className={`w-5 h-5 rounded-full flex items-center justify-center mr-3 mt-1 ${
-                            courseInfo.course === option.value ? 'bg-blue-500' : 'border border-gray-300'
+                            courseInfo.course === option.value ? 'bg-green-500' : 'border border-gray-300'
                           }`}>
                             {courseInfo.course === option.value && <CheckCircle size={16} className="text-white" />}
                           </div>
@@ -609,8 +609,8 @@ const Apply: React.FC = () => {
                         key={option.value}
                         className={`flex-1 border rounded-lg p-3 cursor-pointer transition-all flex items-center ${
                           courseInfo.classFormat === option.value 
-                            ? 'border-blue-500 bg-blue-50' 
-                            : 'border-gray-200 hover:border-blue-300'
+                            ? 'border-green-500 bg-green-50' 
+                            : 'border-gray-200 hover:border-green-300'
                         }`}
                         onClick={() => setCourseInfo(prev => ({ ...prev, classFormat: option.value }))}
                       >
@@ -624,14 +624,14 @@ const Apply: React.FC = () => {
                           className="hidden"
                         />
                         <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                          courseInfo.classFormat === option.value ? 'border-blue-500' : 'border-gray-300'
+                          courseInfo.classFormat === option.value ? 'border-green-500' : 'border-gray-300'
                         }`}>
                           {courseInfo.classFormat === option.value && (
-                            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                            <div className="w-3 h-3 rounded-full bg-green-500"></div>
                           )}
                         </div>
                         <div className="ml-2 flex items-center">
-                          <span className="mr-2 text-blue-500">{option.icon}</span>
+                          <span className="mr-2 text-green-500">{option.icon}</span>
                           <span className="text-sm">{option.label}</span>
                         </div>
                       </div>
@@ -655,8 +655,8 @@ const Apply: React.FC = () => {
                         key={option.value}
                         className={`flex-1 border rounded-lg p-3 cursor-pointer transition-all flex items-center ${
                           courseInfo.paymentPlan === option.value 
-                            ? 'border-blue-500 bg-blue-50' 
-                            : 'border-gray-200 hover:border-blue-300'
+                            ? 'border-green-500 bg-green-50' 
+                            : 'border-gray-200 hover:border-green-300'
                         }`}
                         onClick={() => setCourseInfo(prev => ({ ...prev, paymentPlan: option.value }))}
                       >
@@ -670,14 +670,14 @@ const Apply: React.FC = () => {
                           className="hidden"
                         />
                         <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                          courseInfo.paymentPlan === option.value ? 'border-blue-500' : 'border-gray-300'
+                          courseInfo.paymentPlan === option.value ? 'border-green-500' : 'border-gray-300'
                         }`}>
                           {courseInfo.paymentPlan === option.value && (
-                            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                            <div className="w-3 h-3 rounded-full bg-green-500"></div>
                           )}
                         </div>
                         <div className="ml-2 flex items-center">
-                          <span className="mr-2 text-blue-500">{option.icon}</span>
+                          <span className="mr-2 text-green-500">{option.icon}</span>
                           <span className="text-sm">{option.label}</span>
                         </div>
                       </div>
@@ -702,8 +702,8 @@ const Apply: React.FC = () => {
                         key={option.value}
                         className={`border rounded-lg p-3 cursor-pointer transition-all flex items-center justify-center ${
                           courseInfo.currency === option.value 
-                            ? 'border-blue-500 bg-blue-50' 
-                            : 'border-gray-200 hover:border-blue-300'
+                            ? 'border-green-500 bg-green-50' 
+                            : 'border-gray-200 hover:border-green-300'
                         }`}
                         onClick={() => setCourseInfo(prev => ({ ...prev, currency: option.value }))}
                       >
@@ -717,7 +717,7 @@ const Apply: React.FC = () => {
                           className="hidden"
                         />
                         <div className="flex items-center">
-                          <span className={`mr-2 font-medium ${courseInfo.currency === option.value ? 'text-blue-500' : 'text-gray-600'}`}>
+                          <span className={`mr-2 font-medium ${courseInfo.currency === option.value ? 'text-green-500' : 'text-gray-600'}`}>
                             {option.icon}
                           </span>
                           <span className="text-sm">{option.label}</span>
@@ -742,12 +742,12 @@ const Apply: React.FC = () => {
                     name="voucher"
                     value={courseInfo.voucher}
                     onChange={handleCourseInfoChange}
-                    className="flex-grow block p-3 border border-gray-200 rounded-l-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="flex-grow block p-3 border border-gray-200 rounded-l-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
                     placeholder="Enter voucher code (e.g. FREDMIND2025)"
                   />
                   <button
                     type="button"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 transition-colors duration-300 flex items-center"
+                    className="bg-green-600 text-white px-4 py-2 rounded-r-lg hover:bg-green-700 transition-colors duration-300 flex items-center"
                     onClick={handleApplyVoucher}
                   >
                     Apply
@@ -761,7 +761,7 @@ const Apply: React.FC = () => {
                 )}
               </div>
               
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+              <div className="bg-green-50 p-4 rounded-lg border border-green-100">
                 <div className="flex items-start">
                   <input
                     type="checkbox"
@@ -773,11 +773,11 @@ const Apply: React.FC = () => {
                   />
                   <label htmlFor="studentPolicy" className="ml-2 text-sm text-gray-700">
                     I agree to Fredmind Schools{' '}
-                    <Link href="#" className="text-blue-600 hover:underline font-medium">
+                    <Link href="#" className="text-green-600 hover:underline font-medium">
                       Terms of Service
                     </Link>{' '}
                     and{' '}
-                    <Link href="#" className="text-blue-600 hover:underline font-medium">
+                    <Link href="#" className="text-green-600 hover:underline font-medium">
                       Privacy Policy
                     </Link>.
                   </label>
@@ -799,7 +799,7 @@ const Apply: React.FC = () => {
                 </button>
                 <button 
                   type="submit" 
-                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center font-medium shadow-md"
+                  className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 flex items-center font-medium shadow-md"
                 >
                   Continue to Summary <ChevronRight size={18} className="ml-2" />
                 </button>
@@ -815,7 +815,7 @@ const Apply: React.FC = () => {
               <div className="bg-white shadow-lg rounded-xl p-6 md:p-8 mb-6">
                 <div className="border-b border-gray-100 pb-4 mb-6">
                   <h3 className="text-2xl font-semibold flex items-center text-gray-800">
-                    <Info size={22} className="mr-2 text-blue-500" /> Application Summary
+                    <Info size={22} className="mr-2 text-green-500" /> Application Summary
                   </h3>
                   <p className="text-gray-500 text-sm mt-1">Please review your information before proceeding to payment</p>
                 </div>
@@ -823,7 +823,7 @@ const Apply: React.FC = () => {
                 <div className="space-y-6">
                   <div>
                     <h4 className="text-lg font-medium text-gray-800 mb-4 flex items-center">
-                      <User size={18} className="mr-2 text-blue-500" /> Personal Information
+                      <User size={18} className="mr-2 text-green-500" /> Personal Information
                       <button 
                         type="button" 
                         onClick={() => setStep(1)} 
@@ -880,7 +880,7 @@ const Apply: React.FC = () => {
                   
                   <div>
                     <h4 className="text-lg font-medium text-gray-800 mb-4 flex items-center">
-                      <Book size={18} className="mr-2 text-blue-500" /> Course Details
+                      <Book size={18} className="mr-2 text-green-500" /> Course Details
                       <button 
                         type="button" 
                         onClick={() => setStep(2)} 
@@ -932,7 +932,7 @@ const Apply: React.FC = () => {
             
             <div>
               <div className="bg-white shadow-lg rounded-xl overflow-hidden sticky top-6">
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white">
+                <div className="bg-gradient-to-r from-green-600 to-indigo-700 p-4 text-white">
                   <h3 className="text-lg font-semibold flex items-center">
                     <CreditCard size={20} className="mr-2" /> Payment Summary
                   </h3>
@@ -968,7 +968,7 @@ const Apply: React.FC = () => {
                       </div>
                     )}
                     
-                    <div className="flex justify-between py-2 text-blue-600">
+                    <div className="flex justify-between py-2 text-green-600">
                       <span>Amount Payable Now:</span>
                       <span className="font-medium">
                         {`${paymentInfo.currencySymbol}${voucherApplied 
@@ -997,7 +997,7 @@ const Apply: React.FC = () => {
                   <form onSubmit={handlePaymentSubmit} className="mt-6">
                     <button 
                       type="submit" 
-                      className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center font-medium shadow-md"
+                      className="w-full bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 flex items-center justify-center font-medium shadow-md"
                     >
                       <CreditCard size={18} className="mr-2" />
                       Pay {`${paymentInfo.currencySymbol}${voucherApplied 
