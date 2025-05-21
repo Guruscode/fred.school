@@ -1,6 +1,7 @@
 import LandingLayout from '@/components/layout/LandingLayout';
 import Hero from '@/components/landing/Hero';
 import Courses from '@/components/landing/Courses';
+import JoinCourses from '@/components/landing/JoinCourses';
 import CallToAction from '@/components/landing/CallToAction';
 import Footer from '@/components/layout/Footer';
 import Navbar from '@/components/layout/Navbar';
@@ -12,6 +13,7 @@ export default function HomePage() {
     <LandingLayout>
       <Navbar />
       <Hero />
+      <JoinCourses />
       <Courses />
       <MentorsSection />
    

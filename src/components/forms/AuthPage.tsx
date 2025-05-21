@@ -14,7 +14,7 @@ export default function LoginComponent() {
           <div className="flex flex-col items-center justify-center text-center">
             <h2 className="text-3xl font-bold text-gray-800">Exam Mastery Hub</h2>
             <p className="text-gray-600 mt-2">
-              Unleash Your Academic Success with Exam Mastery Hub's Exam Excellence Platform
+              Unleash Your Academic Success with Exam Mastery Hubs Exam Excellence Platform
             </p>
             <div className="mt-6">
               {/* Add your illustration or icons here */}

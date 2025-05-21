@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useState } from 'react'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
 
@@ -31,7 +30,7 @@ export default function TutorApplicationForm() {
     resolver: zodResolver(formSchema),
   })
 
-  const [submitted, setSubmitted] = useState(false)
+  const [submitted] = useState(false)
 
   const onSubmit = (data: FormData) => {
     console.log(data)
