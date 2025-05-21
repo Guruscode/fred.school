@@ -83,11 +83,12 @@ const Hero: React.FC = () => {
         We provide you with an exceptional learning experience to help you build a lucrative tech career.
       </p>
 
-      <div className="flex justify-center mb-12">
+    <div className="flex justify-center mb-12">
         <Link href="/apply">
-        <button className="bg-black text-white px-8 py-3 rounded-full flex items-center font-medium hover:bg-gray-800 transition-colors">
-          <span>Apply for a courses</span> <ChevronDown className="ml-2" size={18} />
-        </button>
+          <button className="bg-black text-white px-6 py-3 rounded-full flex items-center gap-2 font-medium shadow-md hover:bg-gray-900 hover:scale-105 transition-all duration-200 ease-in-out">
+            <span>Apply for a Course</span>
+            <ChevronDown className="text-white" size={18} />
+          </button>
         </Link>
       </div>
 

@@ -153,10 +153,12 @@ const CategoryBadge = ({ category }: { category: string }) => {
 };
 
 const EduleCourseListings = () => {
-  const [activeCategory, setActiveCategory] = useState<string>("ui-ux");
+  const [activeCategory, setActiveCategory] = useState<string>("all"); // Changed default to "all"
   
-  // Filter courses or show all if "all" is selected
-  const displayedCourses = coursesData;
+  // Filter courses based on activeCategory
+  const displayedCourses = activeCategory === "all"
+    ? coursesData
+    : coursesData.filter(course => course.category === activeCategory);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -185,13 +187,18 @@ const EduleCourseListings = () => {
       
       {/* Category filter */}
       <div className="relative bg-green-50 p-6 rounded-lg mb-8">
-        <button className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        
+       
         <div className="flex justify-center overflow-x-auto px-8">
+          <button
+            className={`mx-2 px-6 py-2 rounded-md transition-all ${
+              activeCategory === "all"
+                ? "bg-white text-green-600 shadow-md font-semibold border border-green-200"
+                : "bg-transparent text-gray-700 hover:bg-white"
+            }`}
+            onClick={() => setActiveCategory("all")}
+          >
+            All
+          </button>
           {categories.map(category => (
             <button
               key={category.id}
@@ -207,89 +214,87 @@ const EduleCourseListings = () => {
           ))}
         </div>
         
-        <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+      
       </div>
       
       {/* Course Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {displayedCourses.map(course => (
-          <div key={course.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
-            {/* Course Image */}
-            <div className="relative">
-              <Image
-               src={course.image} 
-                alt={course.title} 
-                width={600} // replace with your actual image width
-                height={600} // replace with your actual image height
-              className="w-full h-48 object-cover"
-              />
-
-             
-            </div>
-            
-            {/* Course Content */}
-            <div className="p-5">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center">
-                  <Image
-                   src={course.instructorImage} 
-                    alt={course.instructor}
-                    width={200} // replace with your actual image width
-                    height={600} // replace with your actual image height
-                      className="w-10 h-10 rounded-full object-cover mr-2" 
-                  />
-
-                 
-                  <span className="text-sm text-gray-700">{course.instructor}</span>
-                </div>
-                <CategoryBadge category="Science" />
+        {displayedCourses.length > 0 ? (
+          displayedCourses.map(course => (
+            <div key={course.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+              {/* Course Image */}
+              <div className="relative">
+                <Image
+                  src={course.image}
+                  alt={course.title}
+                  width={600}
+                  height={600}
+                  className="w-full h-48 object-cover"
+                />
               </div>
               
-              <h3 className="text-lg font-semibold mb-3 text-gray-800 line-clamp-2 h-14">
-                {course.title}
-              </h3>
-              
-              <div className="flex items-center justify-between mb-3 text-gray-600">
-                <div className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="text-xs">{course.duration}</span>
+              {/* Course Content */}
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    <Image
+                      src={course.instructorImage}
+                      alt={course.instructor}
+                      width={200}
+                      height={600}
+                      className="w-10 h-10 rounded-full object-cover mr-2"
+                    />
+                    <span className="text-sm text-gray-700">{course.instructor}</span>
+                  </div>
+                  <CategoryBadge category={course.category} /> {/* Updated to use course.category */}
                 </div>
-                <div className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
-                  <span className="text-xs">{course.lectures} Lectures</span>
+                
+                <h3 className="text-lg font-semibold mb-3 text-gray-800 line-clamp-2 h-14">
+                  {course.title}
+                </h3>
+                
+                <div className="flex items-center justify-between mb-3 text-gray-600">
+                  <div className="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-xs">{course.duration}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    <span className="text-xs">{course.lectures} Lectures</span>
+                  </div>
                 </div>
-              </div>
-              
-              <hr className="my-3" />
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  {course.price === 0 ? (
-                    <span className="text-green-600 font-semibold text-lg">Free</span>
-                  ) : (
-                    <div className="flex items-center">
-                      <span className="text-green-600 font-bold text-lg">${course.price.toFixed(2)}</span>
-                      {course.originalPrice && (
-                        <span className="text-gray-400 line-through text-sm ml-2">
-                          ${course.originalPrice.toFixed(2)}
-                        </span>
-                      )}
-                    </div>
-                  )}
+                
+                <hr className="my-3" />
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    {course.price === 0 ? (
+                      <span className="text-green-600 font-semibold text-lg">Free</span>
+                    ) : (
+                      <div className="flex items-center">
+                        <span className="text-green-600 font-bold text-lg">${course.price.toFixed(2)}</span>
+                        {course.originalPrice && (
+                          <span className="text-gray-400 line-through text-sm ml-2">
+                            ${course.originalPrice.toFixed(2)}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <StarRating rating={course.rating} />
                 </div>
-                <StarRating rating={course.rating} />
               </div>
             </div>
+          ))
+        ) : (
+          <div className="col-span-full text-center text-gray-600">
+            No courses found for this category.
           </div>
-        ))}
+        )}
       </div>
       
       {/* "Other Course" Button */}

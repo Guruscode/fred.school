@@ -133,7 +133,7 @@ const TutorsShowcase = () => {
       
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Tutor Profile Cards - Click to view details */}
-        <div className="col-span-1 lg:col-span-1 space-y-4 order-2 lg:order-1">
+        <div className="col-span-1  lg:col-span-1  space-y-4 order-2 lg:order-1 ">
           {tutorsData.map(tutor => (
             <div 
               key={tutor.id}
