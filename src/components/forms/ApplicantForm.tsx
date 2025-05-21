@@ -207,9 +207,9 @@ const Apply: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
-      <div className="container mx-auto px-4 py-8 max-w-5xl">
+      <div className="container  mx-auto px-4 py-8 max-w-5xl">
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-pink-200 to-green-100 rounded-xl p-8 text-white text-center shadow-lg mb-8">
+        <div className="bg-gradient-to-r from-gray-900 to-black rounded-xl p-8 text-white text-center shadow-lg mb-8">
           <h1 className="text-4xl font-bold mb-2">Join Fredmind School</h1>
           <p className="text-lg font-light opacity-90">Complete your admission form to start your educational journey</p>
         </div>

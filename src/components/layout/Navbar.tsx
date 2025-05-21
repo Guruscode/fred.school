@@ -46,11 +46,11 @@ const Navbar: React.FC = () => {
 
         {/* Right Side Buttons */}
         <div className="hidden md:flex items-center space-x-4">
-          <Link href="/login" className="font-medium text-gray-800 hover:text-gray-600">
+          <Link href="/apply" className="font-medium text-gray-800 hover:text-gray-600">
             Sign up
           </Link>
           <Link
-            href="/play"
+            href="/teach"
             className="bg-black text-white font-medium px-4 py-2 rounded-full hover:bg-gray-800 flex items-center"
           >
             Work with us 
@@ -104,14 +104,14 @@ const Navbar: React.FC = () => {
           
             <hr className="border-gray-200" />
             <Link
-              href="/login"
+              href="/apply"
               className="font-medium text-gray-800 hover:text-gray-600"
               onClick={toggleMenu}
             >
               Sign up
             </Link>
             <Link
-              href="/play"
+              href="/teach"
               className="bg-black text-white font-medium px-4 py-2 rounded-full hover:bg-gray-800 flex items-center justify-center"
               onClick={toggleMenu}
             >
