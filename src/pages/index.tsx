@@ -5,7 +5,7 @@ import JoinCourses from '@/components/landing/JoinCourses';
 import CallToAction from '@/components/landing/CallToAction';
 import Footer from '@/components/layout/Footer';
 import Navbar from '@/components/layout/Navbar';
-import Testimonials from '@/components/landing/Testimonials';
+// import Testimonials from '@/components/landing/Testimonials';
 import MentorsSection from '@/components/landing/Tutors';
 
 export default function HomePage() {
@@ -17,7 +17,7 @@ export default function HomePage() {
       <Courses />
       <MentorsSection />
    
-      <Testimonials />
+      {/* <Testimonials /> */}
       <CallToAction />
       <Footer />
     </LandingLayout>

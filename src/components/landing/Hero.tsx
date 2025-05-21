@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 interface CategoryCard {
   id: number;
@@ -83,9 +84,11 @@ const Hero: React.FC = () => {
       </p>
 
       <div className="flex justify-center mb-12">
+        <Link href="/apply">
         <button className="bg-black text-white px-8 py-3 rounded-full flex items-center font-medium hover:bg-gray-800 transition-colors">
-          <span>Download App</span> <ChevronDown className="ml-2" size={18} />
+          <span>Apply for a courses</span> <ChevronDown className="ml-2" size={18} />
         </button>
+        </Link>
       </div>
 
       <div className="flex flex-nowrap gap-4 md:gap-6 overflow-x-auto pb-6 md:pb-8 px-2">

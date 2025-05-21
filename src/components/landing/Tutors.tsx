@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from 'next/image';
 
 // Sample tutors data - in a real application, you would fetch this from an API
 const tutorsData = [
@@ -143,11 +144,14 @@ const TutorsShowcase = () => {
                   : "bg-white hover:bg-gray-100 shadow"
               }`}
             >
-              <img 
-                src={tutor.image} 
-                alt={tutor.name} 
-                className="w-16 h-16 rounded-full object-cover"
+             <Image
+                src={tutor.image}
+                alt={tutor.name}
+                width={200} // replace with your actual image width
+                height={200} // replace with your actual image height
+                 className="w-16 h-16 rounded-full object-cover"
               />
+
               <div className="ml-4">
                 <h4 className={`font-semibold ${activeProfile === tutor.id ? "text-white" : "text-gray-800"}`}>
                   {tutor.name}
@@ -184,11 +188,14 @@ const TutorsShowcase = () => {
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
             <div className="relative h-48 bg-emerald-500">
               <div className="absolute -bottom-16 left-8">
-                <img 
-                  src={activeTutor.image} 
-                  alt={activeTutor.name} 
-                  className="w-32 h-32 rounded-full border-4 border-white object-cover"
-                />
+              <Image
+              src={activeTutor.image}
+              alt={activeTutor.name}
+              width={200} // replace with your actual image width
+              height={200} // replace with your actual image height
+             className="w-32 h-32 rounded-full border-4 border-white object-cover"
+            />
+
               </div>
             </div>
             

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { v4 as uuidv4 } from 'uuid';
+import { CheckCircle, ChevronRight, ChevronLeft, CreditCard, Book, User, Info, HelpCircle, Calendar, Mail, Phone, Globe, Award, AlertCircle } from 'lucide-react';
 
 // Define interfaces for form data
 interface PersonalInfo {
@@ -41,6 +41,7 @@ interface PaymentInfo {
 const Apply: React.FC = () => {
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const [animateStep, setAnimateStep] = useState(true);
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
     firstName: '',
     lastName: '',
@@ -72,7 +73,18 @@ const Apply: React.FC = () => {
     totalAmountDue: 505000,
     currencySymbol: '₦',
   });
-  const [errors, setErrors] = useState<Partial<PersonalInfo & CourseInfo>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [voucherApplied, setVoucherApplied] = useState(false);
+  const [voucherMessage, setVoucherMessage] = useState('');
+
+  // Animation effect when changing steps
+  useEffect(() => {
+    setAnimateStep(false);
+    const timer = setTimeout(() => {
+      setAnimateStep(true);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [step]);
 
   // Handle input changes for personal info
   const handlePersonalInfoChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -83,10 +95,9 @@ const Apply: React.FC = () => {
 
   // Handle input changes for course info
   const handleCourseInfoChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value, type } = e.target as HTMLInputElement;
-    const checked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
+    const { name, value, type, checked } = e.target as HTMLInputElement;
     setCourseInfo((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
@@ -100,6 +111,7 @@ const Apply: React.FC = () => {
     if (!personalInfo.firstName) newErrors.firstName = 'First name is required';
     if (!personalInfo.lastName) newErrors.lastName = 'Last name is required';
     if (!personalInfo.email) newErrors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(personalInfo.email)) newErrors.email = 'Please enter a valid email';
     if (!personalInfo.phoneNumber) newErrors.phoneNumber = 'Phone number is required';
     if (!personalInfo.gender) newErrors.gender = 'Gender is required';
     if (!personalInfo.dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
@@ -114,7 +126,7 @@ const Apply: React.FC = () => {
 
   // Validate course info
   const validateCourseInfo = () => {
-    const newErrors: Partial<CourseInfo> = {};
+    const newErrors: Record<string, string> = {};
     if (!courseInfo.course) newErrors.course = 'Course is required';
     if (!courseInfo.cohort) newErrors.cohort = 'Cohort is required';
     if (!courseInfo.classFormat) newErrors.classFormat = 'Class format is required';
@@ -147,597 +159,887 @@ const Apply: React.FC = () => {
     router.push('/success'); // Redirect to a success page (not implemented)
   };
 
+  // Apply voucher handler
+  const handleApplyVoucher = () => {
+    if (courseInfo.voucher.trim()) {
+      // Simulate voucher validation
+      if (courseInfo.voucher.toLowerCase() === 'fredmind2025') {
+        setVoucherApplied(true);
+        setVoucherMessage('Voucher applied successfully! 10% discount');
+      } else {
+        setVoucherApplied(false);
+        setVoucherMessage('Invalid voucher code');
+      }
+    } else {
+      setVoucherMessage('Please enter a voucher code');
+    }
+  };
+
+  // Get currency symbol based on selected currency
+  const getCurrencySymbol = (currency: string) => {
+    switch (currency) {
+      case 'USD':
+        return '$';
+      case 'USDT/USDC':
+        return '₮';
+      case 'NGN':
+      default:
+        return '₦';
+    }
+  };
+
+  // Format input class based on errors
+  const getInputClass = (fieldName: string) => {
+    return `mt-1 block w-full p-3 border ${
+      errors[fieldName] ? 'border-red-300 bg-red-50' : 'border-gray-200'
+    } rounded-lg transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none`;
+  };
+
+  // Get step status class
+  const getStepStatusClass = (stepNumber: number) => {
+    if (step === stepNumber) {
+      return 'bg-blue-600 text-white';
+    } else if (step > stepNumber) {
+      return 'bg-green-500 text-white';
+    }
+    return 'bg-gray-200 text-gray-600';
+  };
+
   return (
-    <div className="container mx-auto my-8 px-4 font-inter">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg p-8 text-white text-center">
-        <h1 className="text-3xl font-bold">Join Fredmind School</h1>
-        <p className="mt-2">Complete your admission form to start your journey with us. It only takes a few minutes!</p>
-      </div>
-
-      {/* Progress Indicator */}
-      <div className="flex justify-between my-6">
-        {['Personal Info', 'Course Selection', 'Summary'].map((label, index) => (
-          <div
-            key={index}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-full ${
-              step === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600'
-            }`}
-          >
-            <i className={`fas ${index === 0 ? 'fa-user' : index === 1 ? 'fa-book' : 'fa-file-invoice'}`}></i>
-            <span>{label}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Step 1: Personal Information */}
-      {step === 1 && (
-        <div className="bg-white shadow-lg rounded-lg p-6 fade-in">
-          <h3 className="text-xl font-semibold mb-4">
-            <i className="fas fa-user-edit mr-2"></i> Personal Information
-          </h3>
-          <form onSubmit={handlePersonalInfoSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name</label>
-                <input
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  value={personalInfo.firstName}
-                  onChange={handlePersonalInfoChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="Enter first name"
-                  required
-                />
-                {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
-              </div>
-              <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name</label>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  value={personalInfo.lastName}
-                  onChange={handlePersonalInfoChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="Enter last name"
-                  required
-                />
-                {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={personalInfo.email}
-                  onChange={handlePersonalInfoChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="Enter email"
-                  required
-                />
-                {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
-              </div>
-              <div>
-                <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">Phone Number</label>
-                <input
-                  type="tel"
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  value={personalInfo.phoneNumber}
-                  onChange={handlePersonalInfoChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="Enter phone number"
-                  required
-                />
-                {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber}</p>}
-              </div>
-              <div>
-                <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Gender</label>
-                <select
-                  id="gender"
-                  name="gender"
-                  value={personalInfo.gender}
-                  onChange={handlePersonalInfoChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  required
-                >
-                  <option value="" disabled>Select gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
-                {errors.gender && <p className="text-red-500 text-sm">{errors.gender}</p>}
-              </div>
-              <div>
-                <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">Date of Birth</label>
-                <input
-                  type="date"
-                  id="dateOfBirth"
-                  name="dateOfBirth"
-                  value={personalInfo.dateOfBirth}
-                  onChange={handlePersonalInfoChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  required
-                />
-                {errors.dateOfBirth && <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>}
-              </div>
-              <div>
-                <label htmlFor="academicAchievement" className="block text-sm font-medium text-gray-700">Highest Academic Achievement</label>
-                <select
-                  id="academicAchievement"
-                  name="academicAchievement"
-                  value={personalInfo.academicAchievement}
-                  onChange={handlePersonalInfoChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  required
-                >
-                  <option value="" disabled>Select achievement</option>
-                  <option value="High School">High School</option>
-                  <option value="Bachelor's Degree">Bachelor's Degree</option>
-                  <option value="Master's Degree">Master's Degree</option>
-                  <option value="PhD">PhD</option>
-                </select>
-                {errors.academicAchievement && <p className="text-red-500 text-sm">{errors.academicAchievement}</p>}
-              </div>
-              <div>
-                <label htmlFor="ageRange" className="block text-sm font-medium text-gray-700">Age Range</label>
-                <select
-                  id="ageRange"
-                  name="ageRange"
-                  value={personalInfo.ageRange}
-                  onChange={handlePersonalInfoChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  required
-                >
-                  <option value="" disabled>Select age range</option>
-                  <option value="18-25">18-25</option>
-                  <option value="26-35">26-35</option>
-                  <option value="36-45">36-45</option>
-                  <option value="46+">46+</option>
-                </select>
-                {errors.ageRange && <p className="text-red-500 text-sm">{errors.ageRange}</p>}
-              </div>
-              <div>
-                <label htmlFor="country" className="block text-sm font-medium text-gray-700">Country</label>
-                <select
-                  id="country"
-                  name="country"
-                  value={personalInfo.country}
-                  onChange={handlePersonalInfoChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  required
-                >
-                  <option value="" disabled>Select country</option>
-                  <option value="Nigeria">Nigeria</option>
-                  <option value="Ghana">Ghana</option>
-                  <option value="South Africa">South Africa</option>
-                  <option value="Kenya">Kenya</option>
-                  <option value="Other">Other</option>
-                </select>
-                {errors.country && <p className="text-red-500 text-sm">{errors.country}</p>}
-              </div>
-              <div>
-                <label htmlFor="state" className="block text-sm font-medium text-gray-700">State</label>
-                <select
-                  id="state"
-                  name="state"
-                  value={personalInfo.state}
-                  onChange={handlePersonalInfoChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  required
-                >
-                  <option value="" disabled>Select your state</option>
-                  <option value="Lagos">Lagos</option>
-                  <option value="Abuja">Abuja</option>
-                  <option value="Rivers">Rivers</option>
-                  <option value="Kaduna">Kaduna</option>
-                  <option value="Other">Other</option>
-                </select>
-                {errors.state && <p className="text-red-500 text-sm">{errors.state}</p>}
-              </div>
-              <div>
-                <label htmlFor="howDidYouHear" className="block text-sm font-medium text-gray-700">How Did You Hear About Us?</label>
-                <select
-                  id="howDidYouHear"
-                  name="howDidYouHear"
-                  value={personalInfo.howDidYouHear}
-                  onChange={handlePersonalInfoChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  required
-                >
-                  <option value="" disabled>Select an option</option>
-                  <option value="Social Media">Social Media</option>
-                  <option value="Friend/Referral">Friend/Referral</option>
-                  <option value="Website">Website</option>
-                  <option value="Advertisement">Advertisement</option>
-                  <option value="Other">Other</option>
-                </select>
-                {errors.howDidYouHear && <p className="text-red-500 text-sm">{errors.howDidYouHear}</p>}
-              </div>
-              <div>
-                <label htmlFor="advisorId" className="block text-sm font-medium text-gray-700">Advisor ID (Optional)</label>
-                <input
-                  type="text"
-                  id="advisorId"
-                  name="advisorId"
-                  value={personalInfo.advisorId}
-                  onChange={handlePersonalInfoChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="Enter Advisor ID"
-                />
-              </div>
-            </div>
-            <div className="flex justify-end mt-6">
-              <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-                Next: Course Selection <i className="fas fa-arrow-right ml-2"></i>
-              </button>
-            </div>
-          </form>
+    <div className="min-h-screen bg-gray-50 font-sans">
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
+        {/* Header Section */}
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl p-8 text-white text-center shadow-lg mb-8">
+          <h1 className="text-4xl font-bold mb-2">Join Fredmind School</h1>
+          <p className="text-lg font-light opacity-90">Complete your admission form to start your educational journey</p>
         </div>
-      )}
 
-      {/* Step 2: Course Selection */}
-      {step === 2 && (
-        <div className="bg-white shadow-lg rounded-lg p-6 fade-in">
-          <h3 className="text-xl font-semibold mb-4">
-            <i className="fas fa-book mr-2"></i> Course Selection
-          </h3>
-          <form onSubmit={handleCourseInfoSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="course" className="block text-sm font-medium text-gray-700">Choose Your Course</label>
-                <select
-                  id="course"
-                  name="course"
-                  value={courseInfo.course}
-                  onChange={handleCourseInfoChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  required
+        {/* Progress Indicator */}
+        <div className="relative mb-12">
+          <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -translate-y-1/2"></div>
+          <div className="flex justify-between relative z-10">
+            {[
+              { label: 'Personal Info', icon: <User size={18} /> },
+              { label: 'Course Selection', icon: <Book size={18} /> },
+              { label: 'Summary', icon: <CreditCard size={18} /> }
+            ].map((item, index) => (
+              <div key={index} className="flex flex-col items-center">
+                <div 
+                  className={`flex items-center justify-center w-12 h-12 rounded-full ${getStepStatusClass(index + 1)} shadow-md transition-all duration-500`}
                 >
-                  <option value="" disabled>Select course</option>
-                  <option value="Frontend Engineering">Frontend Engineering</option>
-                  <option value="Backend Engineering">Backend Engineering</option>
-                  <option value="Digital Marketing">Digital Marketing</option>
-                  <option value="Data Analysis">Data Analysis</option>
-                </select>
-                {errors.course && <p className="text-red-500 text-sm">{errors.course}</p>}
-              </div>
-              <div>
-                <label htmlFor="cohort" className="block text-sm font-medium text-gray-700">Cohort (Start Month)</label>
-                <select
-                  id="cohort"
-                  name="cohort"
-                  value={courseInfo.cohort}
-                  onChange={handleCourseInfoChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  required
-                >
-                  <option value="" disabled>Select your Cohort</option>
-                  <option value="January 2025">January 2025</option>
-                  <option value="April 2025">April 2025</option>
-                  <option value="July 2025">July 2025</option>
-                  <option value="October 2025">October 2025</option>
-                </select>
-                {errors.cohort && <p className="text-red-500 text-sm">{errors.cohort}</p>}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Class Format</label>
-                <div className="flex space-x-4">
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="virtualClass"
-                      name="classFormat"
-                      value="Virtual Class"
-                      checked={courseInfo.classFormat === 'Virtual Class'}
-                      onChange={handleCourseInfoChange}
-                      className="mr-2"
-                      required
-                    />
-                    <label htmlFor="virtualClass" className="flex items-center">
-                      <i className="fas fa-laptop mr-1"></i> Virtual Class
-                    </label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="physicalClass"
-                      name="classFormat"
-                      value="Physical Class"
-                      checked={courseInfo.classFormat === 'Physical Class'}
-                      onChange={handleCourseInfoChange}
-                      className="mr-2"
-                    />
-                    <label htmlFor="physicalClass" className="flex items-center">
-                      <i className="fas fa-school mr-1"></i> Physical Class
-                    </label>
-                  </div>
+                  {step > index + 1 ? <CheckCircle size={22} /> : item.icon}
                 </div>
-                {errors.classFormat && <p className="text-red-500 text-sm">{errors.classFormat}</p>}
+                <span className={`mt-2 text-sm font-medium ${step === index + 1 ? 'text-blue-600' : 'text-gray-600'}`}>
+                  {item.label}
+                </span>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Payment Plan</label>
-                <div className="flex space-x-4">
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="fullPayment"
-                      name="paymentPlan"
-                      value="Full Payment"
-                      checked={courseInfo.paymentPlan === 'Full Payment'}
-                      onChange={handleCourseInfoChange}
-                      className="mr-2"
-                      required
-                    />
-                    <label htmlFor="fullPayment" className="flex items-center">
-                      <i className="fas fa-money-bill-wave mr-1"></i> Full Payment
-                    </label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="partPayment"
-                      name="paymentPlan"
-                      value="Part Payment"
-                      checked={courseInfo.paymentPlan === 'Part Payment'}
-                      onChange={handleCourseInfoChange}
-                      className="mr-2"
-                    />
-                    <label htmlFor="partPayment" className="flex items-center">
-                      <i className="fas fa-calendar-alt mr-1"></i> Installments
-                    </label>
-                  </div>
-                </div>
-                {errors.paymentPlan && <p className="text-red-500 text-sm">{errors.paymentPlan}</p>}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Payment Currency</label>
-                <div className="flex space-x-4 flex-wrap">
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="ngn"
-                      name="currency"
-                      value="NGN"
-                      checked={courseInfo.currency === 'NGN'}
-                      onChange={handleCourseInfoChange}
-                      className="mr-2"
-                      required
-                    />
-                    <label htmlFor="ngn" className="flex items-center">
-                      <i className="fas fa-naira-sign mr-1"></i> NGN
-                    </label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="usd"
-                      name="currency"
-                      value="USD"
-                      checked={courseInfo.currency === 'USD'}
-                      onChange={handleCourseInfoChange}
-                      className="mr-2"
-                    />
-                    <label htmlFor="usd" className="flex items-center">
-                      <i className="fas fa-dollar-sign mr-1"></i> USD
-                    </label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="crypto"
-                      name="currency"
-                      value="USDT/USDC"
-                      checked={courseInfo.currency === 'USDT/USDC'}
-                      onChange={handleCourseInfoChange}
-                      className="mr-2"
-                    />
-                    <label htmlFor="crypto" className="flex items-center">
-                      <i className="fab fa-bitcoin mr-1"></i> Crypto
-                    </label>
-                  </div>
-                </div>
-                {errors.currency && <p className="text-red-500 text-sm">{errors.currency}</p>}
-              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Step 1: Personal Information */}
+        {step === 1 && (
+          <div className={`bg-white shadow-lg rounded-xl p-6 md:p-8 ${animateStep ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-4'} transition-all duration-500`}>
+            <div className="border-b border-gray-100 pb-4 mb-6">
+              <h3 className="text-2xl font-semibold flex items-center text-gray-800">
+                <User size={22} className="mr-2 text-blue-500" /> Personal Information
+              </h3>
+              <p className="text-gray-500 text-sm mt-1">Please provide your personal details to get started</p>
             </div>
-            <div className="mt-4">
-              <label htmlFor="voucher" className="block text-sm font-medium text-gray-700">Have a discount voucher?</label>
-              <div className="flex">
-                <input
-                  type="text"
-                  id="voucher"
-                  name="voucher"
-                  value={courseInfo.voucher}
-                  onChange={handleCourseInfoChange}
-                  className="block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="Enter voucher code"
-                />
-                <button
-                  type="button"
-                  className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                  onClick={() => console.log('Voucher applied:', courseInfo.voucher)}
+            
+            <form onSubmit={handlePersonalInfoSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    value={personalInfo.firstName}
+                    onChange={handlePersonalInfoChange}
+                    className={getInputClass('firstName')}
+                    placeholder="Enter your first name"
+                  />
+                  {errors.firstName && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.firstName}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    value={personalInfo.lastName}
+                    onChange={handlePersonalInfoChange}
+                    className={getInputClass('lastName')}
+                    placeholder="Enter your last name"
+                  />
+                  {errors.lastName && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.lastName}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Mail size={16} className="text-gray-400" />
+                    </div>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={personalInfo.email}
+                      onChange={handlePersonalInfoChange}
+                      className={`${getInputClass('email')} pl-10`}
+                      placeholder="your.email@example.com"
+                    />
+                  </div>
+                  {errors.email && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.email}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Phone size={16} className="text-gray-400" />
+                    </div>
+                    <input
+                      type="tel"
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      value={personalInfo.phoneNumber}
+                      onChange={handlePersonalInfoChange}
+                      className={`${getInputClass('phoneNumber')} pl-10`}
+                      placeholder="+234 XXX XXX XXXX"
+                    />
+                  </div>
+                  {errors.phoneNumber && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.phoneNumber}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                  <select
+                    id="gender"
+                    name="gender"
+                    value={personalInfo.gender}
+                    onChange={handlePersonalInfoChange}
+                    className={getInputClass('gender')}
+                  >
+                    <option value="" disabled>Select your gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  {errors.gender && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.gender}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Calendar size={16} className="text-gray-400" />
+                    </div>
+                    <input
+                      type="date"
+                      id="dateOfBirth"
+                      name="dateOfBirth"
+                      value={personalInfo.dateOfBirth}
+                      onChange={handlePersonalInfoChange}
+                      className={`${getInputClass('dateOfBirth')} pl-10`}
+                    />
+                  </div>
+                  {errors.dateOfBirth && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.dateOfBirth}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="academicAchievement" className="block text-sm font-medium text-gray-700 mb-1">Highest Academic Achievement</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Award size={16} className="text-gray-400" />
+                    </div>
+                    <select
+                      id="academicAchievement"
+                      name="academicAchievement"
+                      value={personalInfo.academicAchievement}
+                      onChange={handlePersonalInfoChange}
+                      className={`${getInputClass('academicAchievement')} pl-10`}
+                    >
+                      <option value="" disabled>Select your highest education</option>
+                      <option value="High School">High School</option>
+                      <option value="Bachelor's Degree">Bachelors Degree</option>
+                      <option value="Master's Degree">Masters Degree</option>
+                      <option value="PhD">PhD</option>
+                    </select>
+                  </div>
+                  {errors.academicAchievement && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.academicAchievement}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="ageRange" className="block text-sm font-medium text-gray-700 mb-1">Age Range</label>
+                  <select
+                    id="ageRange"
+                    name="ageRange"
+                    value={personalInfo.ageRange}
+                    onChange={handlePersonalInfoChange}
+                    className={getInputClass('ageRange')}
+                  >
+                    <option value="" disabled>Select your age range</option>
+                    <option value="18-25">18-25</option>
+                    <option value="26-35">26-35</option>
+                    <option value="36-45">36-45</option>
+                    <option value="46+">46+</option>
+                  </select>
+                  {errors.ageRange && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.ageRange}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Globe size={16} className="text-gray-400" />
+                    </div>
+                    <select
+                      id="country"
+                      name="country"
+                      value={personalInfo.country}
+                      onChange={handlePersonalInfoChange}
+                      className={`${getInputClass('country')} pl-10`}
+                    >
+                      <option value="" disabled>Select your country</option>
+                      <option value="Nigeria">Nigeria</option>
+                      <option value="Ghana">Ghana</option>
+                      <option value="South Africa">South Africa</option>
+                      <option value="Kenya">Kenya</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  {errors.country && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.country}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">State/Province</label>
+                  <select
+                    id="state"
+                    name="state"
+                    value={personalInfo.state}
+                    onChange={handlePersonalInfoChange}
+                    className={getInputClass('state')}
+                  >
+                    <option value="" disabled>Select your state</option>
+                    <option value="Lagos">Lagos</option>
+                    <option value="Abuja">Abuja</option>
+                    <option value="Rivers">Rivers</option>
+                    <option value="Kaduna">Kaduna</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  {errors.state && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.state}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="howDidYouHear" className="block text-sm font-medium text-gray-700 mb-1">How Did You Hear About Us?</label>
+                  <select
+                    id="howDidYouHear"
+                    name="howDidYouHear"
+                    value={personalInfo.howDidYouHear}
+                    onChange={handlePersonalInfoChange}
+                    className={getInputClass('howDidYouHear')}
+                  >
+                    <option value="" disabled>Select an option</option>
+                    <option value="Social Media">Social Media</option>
+                    <option value="Friend/Referral">Friend/Referral</option>
+                    <option value="Website">Website</option>
+                    <option value="Advertisement">Advertisement</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  {errors.howDidYouHear && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.howDidYouHear}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="advisorId" className="block text-sm font-medium text-gray-700 mb-1">
+                    Advisor ID <span className="text-gray-400 text-xs">(Optional)</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="advisorId"
+                    name="advisorId"
+                    value={personalInfo.advisorId}
+                    onChange={handlePersonalInfoChange}
+                    className={getInputClass('advisorId')}
+                    placeholder="Enter your advisor's ID if you have one"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex justify-end mt-8">
+                <button 
+                  type="submit" 
+                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center font-medium shadow-md"
                 >
-                  <i className="fas fa-ticket-alt mr-1"></i> Apply
+                  Next: Course Selection <ChevronRight size={18} className="ml-2" />
                 </button>
               </div>
-            </div>
-            <div className="mt-4 flex items-center">
-              <input
-                type="checkbox"
-                id="studentPolicy"
-                name="studentPolicy"
-                checked={courseInfo.studentPolicy}
-                onChange={handleCourseInfoChange}
-                className="mr-2"
-                required
-              />
-              <label htmlFor="studentPolicy" className="text-sm text-gray-700">
-                I agree to Fredmind School's{' '}
-                <Link href="#" className="text-blue-500 hover:underline">
-                  Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link href="#" className="text-blue-500 hover:underline">
-                  Privacy Policy
-                </Link>.
-              </label>
-            </div>
-            {errors.studentPolicy && <p className="text-red-500 text-sm">{errors.studentPolicy}</p>}
-            <div className="flex justify-between mt-6">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300"
-              >
-                <i className="fas fa-arrow-left mr-2"></i> Back
-              </button>
-              <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-                Continue to Summary <i className="fas fa-arrow-right ml-2"></i>
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {/* Step 3: Summary */}
-      {step === 3 && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white shadow-lg rounded-lg p-6 fade-in">
-            <h3 className="text-xl font-semibold mb-4">
-              <i className="fas fa-user mr-2"></i> Personal Information
-            </h3>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="font-medium">Full Name:</span>
-                <span>{`${personalInfo.firstName} ${personalInfo.lastName}`}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Gender:</span>
-                <span>{personalInfo.gender || 'Not provided'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Date of Birth:</span>
-                <span>{personalInfo.dateOfBirth || 'Not provided'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">How Did You Hear About Us:</span>
-                <span>{personalInfo.howDidYouHear || 'Not provided'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Email:</span>
-                <span>{personalInfo.email || 'Not provided'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Phone Number:</span>
-                <span>{personalInfo.phoneNumber || 'Not provided'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Highest Education:</span>
-                <span>{personalInfo.academicAchievement || 'Not provided'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Age Range:</span>
-                <span>{personalInfo.ageRange || 'Not provided'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Location:</span>
-                <span>{`${personalInfo.state}, ${personalInfo.country}` || 'Not provided'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Advisor ID:</span>
-                <span>{personalInfo.advisorId || 'Not provided'}</span>
-              </div>
-            </div>
-            <h3 className="text-xl font-semibold mt-6 mb-4">
-              <i className="fas fa-book mr-2"></i> Course Selection
-            </h3>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="font-medium">Course:</span>
-                <span>{courseInfo.course || 'Not selected'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Cohort:</span>
-                <span>{courseInfo.cohort || 'Not selected'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Class Format:</span>
-                <span>{courseInfo.classFormat || 'Not selected'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Payment Plan:</span>
-                <span>{courseInfo.paymentPlan || 'Not selected'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Currency:</span>
-                <span>{courseInfo.currency || 'Not selected'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Voucher Code:</span>
-                <span>{courseInfo.voucher || 'Not applied'}</span>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white shadow-lg rounded-lg p-6 fade-in">
-            <h3 className="text-xl font-semibold mb-4">
-              <i className="fas fa-file-invoice mr-2"></i> Payment Summary
-            </h3>
-            <div className="space-y-4">
-              <div className="flex justify-between">
-                <span className="font-medium">Course Fee:</span>
-                <span>{`${paymentInfo.currencySymbol}${paymentInfo.courseFee.toLocaleString()}`}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Amount to Pay:</span>
-                <span>{`${paymentInfo.currencySymbol}${paymentInfo.amountToPay.toLocaleString()}`}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Balance to Pay:</span>
-                <span>{`${paymentInfo.currencySymbol}${paymentInfo.balanceToPay.toLocaleString()}`}</span>
-              </div>
-              <div className="flex justify-between text-blue-500">
-                <span className="font-medium">Amount Payable Now:</span>
-                <span>{`${paymentInfo.currencySymbol}${paymentInfo.amountToPay.toLocaleString()}`}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Transaction Fee:</span>
-                <span>{`${paymentInfo.currencySymbol}${paymentInfo.transactionFee.toLocaleString()}`}</span>
-              </div>
-              <div className="flex justify-between font-bold">
-                <span>Total Amount Due:</span>
-                <span>{`${paymentInfo.currencySymbol}${paymentInfo.totalAmountDue.toLocaleString()}`}</span>
-              </div>
-            </div>
-            <form onSubmit={handlePaymentSubmit} className="mt-4">
-              <button type="submit" className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-                <i className="fas fa-lock mr-2"></i> Pay {`${paymentInfo.currencySymbol}${paymentInfo.totalAmountDue.toLocaleString()}`}
-              </button>
             </form>
-            <Link href="/support" className="block w-full text-center bg-gray-200 text-gray-700 px-4 py-2 rounded-md mt-3 hover:bg-gray-300">
-              <i className="fas fa-headset mr-2"></i> Need Help?
-            </Link>
-            <div className="flex justify-between mt-4">
-              <button
-                type="button"
-                onClick={() => setStep(2)}
-                className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300"
-              >
-                <i className="fas fa-arrow-left mr-2"></i> Back
-              </button>
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300"
-              >
-                <i className="fas fa-edit mr-2"></i> Edit Info
-              </button>
+          </div>
+        )}
+
+        {/* Step 2: Course Selection */}
+        {step === 2 && (
+          <div className={`bg-white shadow-lg rounded-xl p-6 md:p-8 ${animateStep ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-4'} transition-all duration-500`}>
+            <div className="border-b border-gray-100 pb-4 mb-6">
+              <h3 className="text-2xl font-semibold flex items-center text-gray-800">
+                <Book size={22} className="mr-2 text-blue-500" /> Course Selection
+              </h3>
+              <p className="text-gray-500 text-sm mt-1">Select your preferred course and payment options</p>
+            </div>
+            
+            <form onSubmit={handleCourseInfoSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="md:col-span-2">
+                  <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-1">Choose Your Course</label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    {[
+                      { value: 'Frontend Engineering', label: 'Frontend Engineering', description: 'Learn modern web development' },
+                      { value: 'Backend Engineering', label: 'Backend Engineering', description: 'Master server-side technologies' },
+                      { value: 'Digital Marketing', label: 'Digital Marketing', description: 'Become a digital marketing expert' },
+                      { value: 'Data Analysis', label: 'Data Analysis', description: 'Analyze and interpret complex data' }
+                    ].map((option) => (
+                      <div 
+                        key={option.value} 
+                        className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                          courseInfo.course === option.value 
+                            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200' 
+                            : 'border-gray-200 hover:border-blue-300'
+                        }`}
+                        onClick={() => setCourseInfo(prev => ({ ...prev, course: option.value }))}
+                      >
+                        <div className="flex items-start">
+                          <div className={`w-5 h-5 rounded-full flex items-center justify-center mr-3 mt-1 ${
+                            courseInfo.course === option.value ? 'bg-blue-500' : 'border border-gray-300'
+                          }`}>
+                            {courseInfo.course === option.value && <CheckCircle size={16} className="text-white" />}
+                          </div>
+                          <div>
+                            <div className="font-medium text-gray-800">{option.label}</div>
+                            <div className="text-xs text-gray-500 mt-1">{option.description}</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {errors.course && (
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.course}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="cohort" className="block text-sm font-medium text-gray-700 mb-1">Cohort (Start Month)</label>
+                  <select
+                    id="cohort"
+                    name="cohort"
+                    value={courseInfo.cohort}
+                    onChange={handleCourseInfoChange}
+                    className={getInputClass('cohort')}
+                  >
+                    <option value="" disabled>Select your Cohort</option>
+                    <option value="January 2025">January 2025</option>
+                    <option value="April 2025">April 2025</option>
+                    <option value="July 2025">July 2025</option>
+                    <option value="October 2025">October 2025</option>
+                  </select>
+                  {errors.cohort && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.cohort}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Class Format</label>
+                  <div className="flex space-x-4 mt-2">
+                    {[
+                      { value: 'Virtual Class', label: 'Virtual Class', icon: <Globe size={18} /> },
+                      { value: 'Physical Class', label: 'Physical Class', icon: <Book size={18} /> }
+                    ].map((option) => (
+                      <div 
+                        key={option.value}
+                        className={`flex-1 border rounded-lg p-3 cursor-pointer transition-all flex items-center ${
+                          courseInfo.classFormat === option.value 
+                            ? 'border-blue-500 bg-blue-50' 
+                            : 'border-gray-200 hover:border-blue-300'
+                        }`}
+                        onClick={() => setCourseInfo(prev => ({ ...prev, classFormat: option.value }))}
+                      >
+                        <input
+                          type="radio"
+                          id={option.value.replace(' ', '')}
+                          name="classFormat"
+                          value={option.value}
+                          checked={courseInfo.classFormat === option.value}
+                          onChange={handleCourseInfoChange}
+                          className="hidden"
+                        />
+                        <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
+                          courseInfo.classFormat === option.value ? 'border-blue-500' : 'border-gray-300'
+                        }`}>
+                          {courseInfo.classFormat === option.value && (
+                            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                          )}
+                        </div>
+                        <div className="ml-2 flex items-center">
+                          <span className="mr-2 text-blue-500">{option.icon}</span>
+                          <span className="text-sm">{option.label}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {errors.classFormat && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.classFormat}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Payment Plan</label>
+                  <div className="flex space-x-4 mt-2">
+                    {[
+                      { value: 'Full Payment', label: 'Full Payment', icon: <CreditCard size={18} /> },
+                      { value: 'Part Payment', label: 'Installments', icon: <Calendar size={18} /> }
+                    ].map((option) => (
+                      <div 
+                        key={option.value}
+                        className={`flex-1 border rounded-lg p-3 cursor-pointer transition-all flex items-center ${
+                          courseInfo.paymentPlan === option.value 
+                            ? 'border-blue-500 bg-blue-50' 
+                            : 'border-gray-200 hover:border-blue-300'
+                        }`}
+                        onClick={() => setCourseInfo(prev => ({ ...prev, paymentPlan: option.value }))}
+                      >
+                        <input
+                          type="radio"
+                          id={option.value.replace(' ', '')}
+                          name="paymentPlan"
+                          value={option.value}
+                          checked={courseInfo.paymentPlan === option.value}
+                          onChange={handleCourseInfoChange}
+                          className="hidden"
+                        />
+                        <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
+                          courseInfo.paymentPlan === option.value ? 'border-blue-500' : 'border-gray-300'
+                        }`}>
+                          {courseInfo.paymentPlan === option.value && (
+                            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                          )}
+                        </div>
+                        <div className="ml-2 flex items-center">
+                          <span className="mr-2 text-blue-500">{option.icon}</span>
+                          <span className="text-sm">{option.label}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {errors.paymentPlan && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.paymentPlan}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Payment Currency</label>
+                  <div className="grid grid-cols-3 gap-3 mt-2">
+                    {[
+                      { value: 'NGN', label: 'NGN', icon: '₦' },
+                      { value: 'USD', label: 'USD', icon: '$' },
+                      { value: 'USDT/USDC', label: 'Crypto', icon: '₮' }
+                    ].map((option) => (
+                      <div 
+                        key={option.value}
+                        className={`border rounded-lg p-3 cursor-pointer transition-all flex items-center justify-center ${
+                          courseInfo.currency === option.value 
+                            ? 'border-blue-500 bg-blue-50' 
+                            : 'border-gray-200 hover:border-blue-300'
+                        }`}
+                        onClick={() => setCourseInfo(prev => ({ ...prev, currency: option.value }))}
+                      >
+                        <input
+                          type="radio"
+                          id={option.value.replace('/', '-')}
+                          name="currency"
+                          value={option.value}
+                          checked={courseInfo.currency === option.value}
+                          onChange={handleCourseInfoChange}
+                          className="hidden"
+                        />
+                        <div className="flex items-center">
+                          <span className={`mr-2 font-medium ${courseInfo.currency === option.value ? 'text-blue-500' : 'text-gray-600'}`}>
+                            {option.icon}
+                          </span>
+                          <span className="text-sm">{option.label}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {errors.currency && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center">
+                      <AlertCircle size={12} className="mr-1" /> {errors.currency}
+                    </p>
+                  )}
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <label htmlFor="voucher" className="block text-sm font-medium text-gray-700 mb-2">Have a discount voucher?</label>
+                <div className="flex">
+                  <input
+                    type="text"
+                    id="voucher"
+                    name="voucher"
+                    value={courseInfo.voucher}
+                    onChange={handleCourseInfoChange}
+                    className="flex-grow block p-3 border border-gray-200 rounded-l-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    placeholder="Enter voucher code (e.g. FREDMIND2025)"
+                  />
+                  <button
+                    type="button"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 transition-colors duration-300 flex items-center"
+                    onClick={handleApplyVoucher}
+                  >
+                    Apply
+                  </button>
+                </div>
+                {voucherMessage && (
+                  <p className={`text-xs mt-2 flex items-center ${voucherApplied ? 'text-green-500' : 'text-red-500'}`}>
+                    {voucherApplied ? <CheckCircle size={12} className="mr-1" /> : <AlertCircle size={12} className="mr-1" />}
+                    {voucherMessage}
+                  </p>
+                )}
+              </div>
+              
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                <div className="flex items-start">
+                  <input
+                    type="checkbox"
+                    id="studentPolicy"
+                    name="studentPolicy"
+                    checked={courseInfo.studentPolicy}
+                    onChange={handleCourseInfoChange}
+                    className="mt-1"
+                  />
+                  <label htmlFor="studentPolicy" className="ml-2 text-sm text-gray-700">
+                    I agree to Fredmind Schools{' '}
+                    <Link href="#" className="text-blue-600 hover:underline font-medium">
+                      Terms of Service
+                    </Link>{' '}
+                    and{' '}
+                    <Link href="#" className="text-blue-600 hover:underline font-medium">
+                      Privacy Policy
+                    </Link>.
+                  </label>
+                </div>
+                {errors.studentPolicy && (
+                  <p className="text-red-500 text-xs mt-1 flex items-center">
+                    <AlertCircle size={12} className="mr-1" /> {errors.studentPolicy}
+                  </p>
+                )}
+              </div>
+              
+              <div className="flex justify-between mt-8">
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="bg-gray-100 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 flex items-center font-medium"
+                >
+                  <ChevronLeft size={18} className="mr-2" /> Back
+                </button>
+                <button 
+                  type="submit" 
+                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center font-medium shadow-md"
+                >
+                  Continue to Summary <ChevronRight size={18} className="ml-2" />
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* Step 3: Summary */}
+        {step === 3 && (
+          <div className={`grid grid-cols-1 lg:grid-cols-3 gap-6 ${animateStep ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-4'} transition-all duration-500`}>
+            <div className="lg:col-span-2">
+              <div className="bg-white shadow-lg rounded-xl p-6 md:p-8 mb-6">
+                <div className="border-b border-gray-100 pb-4 mb-6">
+                  <h3 className="text-2xl font-semibold flex items-center text-gray-800">
+                    <Info size={22} className="mr-2 text-blue-500" /> Application Summary
+                  </h3>
+                  <p className="text-gray-500 text-sm mt-1">Please review your information before proceeding to payment</p>
+                </div>
+                
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="text-lg font-medium text-gray-800 mb-4 flex items-center">
+                      <User size={18} className="mr-2 text-blue-500" /> Personal Information
+                      <button 
+                        type="button" 
+                        onClick={() => setStep(1)} 
+                        className="ml-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded flex items-center hover:bg-gray-200 transition-colors"
+                      >
+                        Edit <ChevronRight size={12} className="ml-1" />
+                      </button>
+                    </h4>
+                    <div className="bg-gray-50 rounded-lg p-4 grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-6">
+                      <div>
+                        <p className="text-xs text-gray-500">Full Name</p>
+                        <p className="font-medium">{`${personalInfo.firstName} ${personalInfo.lastName}`}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Email Address</p>
+                        <p className="font-medium">{personalInfo.email}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Phone Number</p>
+                        <p className="font-medium">{personalInfo.phoneNumber}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Gender</p>
+                        <p className="font-medium">{personalInfo.gender}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Date of Birth</p>
+                        <p className="font-medium">{personalInfo.dateOfBirth}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Age Range</p>
+                        <p className="font-medium">{personalInfo.ageRange}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Education</p>
+                        <p className="font-medium">{personalInfo.academicAchievement}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Location</p>
+                        <p className="font-medium">{`${personalInfo.state}, ${personalInfo.country}`}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Referral Source</p>
+                        <p className="font-medium">{personalInfo.howDidYouHear}</p>
+                      </div>
+                      {personalInfo.advisorId && (
+                        <div>
+                          <p className="text-xs text-gray-500">Advisor ID</p>
+                          <p className="font-medium">{personalInfo.advisorId}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h4 className="text-lg font-medium text-gray-800 mb-4 flex items-center">
+                      <Book size={18} className="mr-2 text-blue-500" /> Course Details
+                      <button 
+                        type="button" 
+                        onClick={() => setStep(2)} 
+                        className="ml-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded flex items-center hover:bg-gray-200 transition-colors"
+                      >
+                        Edit <ChevronRight size={12} className="ml-1" />
+                      </button>
+                    </h4>
+                    <div className="bg-gray-50 rounded-lg p-4 grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-6">
+                      <div>
+                        <p className="text-xs text-gray-500">Selected Course</p>
+                        <p className="font-medium">{courseInfo.course}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Cohort</p>
+                        <p className="font-medium">{courseInfo.cohort}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Class Format</p>
+                        <p className="font-medium">{courseInfo.classFormat}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Payment Plan</p>
+                        <p className="font-medium">{courseInfo.paymentPlan}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Currency</p>
+                        <div className="flex items-center font-medium">
+                          <span>{getCurrencySymbol(courseInfo.currency)}</span>
+                          <span className="ml-1">{courseInfo.currency}</span>
+                        </div>
+                      </div>
+                      {courseInfo.voucher && voucherApplied && (
+                        <div>
+                          <p className="text-xs text-gray-500">Voucher</p>
+                          <p className="font-medium flex items-center">
+                            {courseInfo.voucher}
+                            <span className="text-green-500 ml-2 flex items-center text-xs">
+                              <CheckCircle size={12} className="mr-1" /> Applied
+                            </span>
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <div className="bg-white shadow-lg rounded-xl overflow-hidden sticky top-6">
+                <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white">
+                  <h3 className="text-lg font-semibold flex items-center">
+                    <CreditCard size={20} className="mr-2" /> Payment Summary
+                  </h3>
+                </div>
+                
+                <div className="p-6">
+                  <div className="space-y-3">
+                    <div className="flex justify-between py-2">
+                      <span className="text-gray-600">Course Fee:</span>
+                      <span className="font-medium">{`${paymentInfo.currencySymbol}${paymentInfo.courseFee.toLocaleString()}`}</span>
+                    </div>
+                    
+                    {voucherApplied && (
+                      <div className="flex justify-between py-2 text-green-600">
+                        <span>Discount (10%):</span>
+                        <span className="font-medium">-{`${paymentInfo.currencySymbol}${(paymentInfo.courseFee * 0.1).toLocaleString()}`}</span>
+                      </div>
+                    )}
+                    
+                    <div className="flex justify-between py-2">
+                      <span className="text-gray-600">Amount to Pay:</span>
+                      <span className="font-medium">
+                        {`${paymentInfo.currencySymbol}${voucherApplied 
+                          ? (paymentInfo.amountToPay * 0.9).toLocaleString() 
+                          : paymentInfo.amountToPay.toLocaleString()}`}
+                      </span>
+                    </div>
+                    
+                    {courseInfo.paymentPlan === 'Part Payment' && (
+                      <div className="flex justify-between py-2">
+                        <span className="text-gray-600">Balance to Pay:</span>
+                        <span className="font-medium">{`${paymentInfo.currencySymbol}${paymentInfo.balanceToPay.toLocaleString()}`}</span>
+                      </div>
+                    )}
+                    
+                    <div className="flex justify-between py-2 text-blue-600">
+                      <span>Amount Payable Now:</span>
+                      <span className="font-medium">
+                        {`${paymentInfo.currencySymbol}${voucherApplied 
+                          ? (paymentInfo.amountToPay * 0.9).toLocaleString() 
+                          : paymentInfo.amountToPay.toLocaleString()}`}
+                      </span>
+                    </div>
+                    
+                    <div className="flex justify-between py-2">
+                      <span className="text-gray-600">Transaction Fee:</span>
+                      <span className="font-medium">{`${paymentInfo.currencySymbol}${paymentInfo.transactionFee.toLocaleString()}`}</span>
+                    </div>
+                    
+                    <div className="border-t border-gray-200 mt-2 pt-3">
+                      <div className="flex justify-between py-2 font-bold text-lg">
+                        <span>Total Due:</span>
+                        <span>
+                          {`${paymentInfo.currencySymbol}${voucherApplied 
+                            ? ((paymentInfo.amountToPay * 0.9) + paymentInfo.transactionFee).toLocaleString() 
+                            : paymentInfo.totalAmountDue.toLocaleString()}`}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <form onSubmit={handlePaymentSubmit} className="mt-6">
+                    <button 
+                      type="submit" 
+                      className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center font-medium shadow-md"
+                    >
+                      <CreditCard size={18} className="mr-2" />
+                      Pay {`${paymentInfo.currencySymbol}${voucherApplied 
+                        ? ((paymentInfo.amountToPay * 0.9) + paymentInfo.transactionFee).toLocaleString() 
+                        : paymentInfo.totalAmountDue.toLocaleString()}`}
+                    </button>
+                  </form>
+                  
+                  <Link 
+                    href="/support" 
+                    className="block w-full text-center bg-gray-100 text-gray-700 px-4 py-3 rounded-lg mt-3 hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center"
+                  >
+                    <HelpCircle size={18} className="mr-2" /> Need Help?
+                  </Link>
+                  
+                  <div className="flex justify-between mt-6">
+                    <button
+                      type="button"
+                      onClick={() => setStep(2)}
+                      className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center mr-2"
+                    >
+                      <ChevronLeft size={16} className="mr-1" /> Back
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setStep(1)}
+                      className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center"
+                    >
+                      <User size={16} className="mr-1" /> Edit All
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+        )}
+        
+        {/* Footer */}
+        <div className="text-center text-gray-500 text-sm mt-8">
+          &copy; {new Date().getFullYear()} Fredmind School. All rights reserved.
         </div>
-      )}
+      </div>
     </div>
   );
 };

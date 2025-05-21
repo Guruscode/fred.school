@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import AdminSidebar from "@/components/layout/AdminSidebar";
 import AdminTopbar from "@/components/layout/AdminTopbar";
-import { CheckCircle, XCircle, BookOpen, Users, Clock } from "lucide-react";
+import { CheckCircle, BookOpen, Users, Clock } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -13,10 +13,10 @@ import {
 } from "recharts";
 
 // Mock data
-const initialStudentApplications = [
-  { id: 1, name: "John Doe", email: "john@example.com", status: "pending" },
-  { id: 2, name: "Jane Smith", email: "jane@example.com", status: "pending" },
-];
+// const initialStudentApplications = [
+//   { id: 1, name: "John Doe", email: "john@example.com", status: "pending" },
+//   { id: 2, name: "Jane Smith", email: "jane@example.com", status: "pending" },
+// ];
 
 const initialTutorApplications = [
   { id: 1, name: "Dr. Alan Turing", expertise: ["Frontend Engineering"], status: "pending" },
@@ -50,29 +50,29 @@ const activityData = [
 ];
 
 export default function AdminDashboard() {
-  const [studentApps, setStudentApps] = useState(initialStudentApplications);
-  const [tutorApps, setTutorApps] = useState(initialTutorApplications);
-  const [assignments, setAssignments] = useState<{ tutorId: number; course: string }[]>([]);
+  // const [studentApps, setStudentApps] = useState(initialStudentApplications);
+  const [tutorApps] = useState(initialTutorApplications);
+  const [assignments] = useState<{ tutorId: number; course: string }[]>([]);
 
-  const handleStudentDecision = (id: number, approve: boolean) => {
-    setStudentApps((prev) =>
-      prev.map((app) =>
-        app.id === id ? { ...app, status: approve ? "approved" : "rejected" } : app
-      )
-    );
-  };
+  // const handleStudentDecision = (id: number, approve: boolean) => {
+  //   setStudentApps((prev) =>
+  //     prev.map((app) =>
+  //       app.id === id ? { ...app, status: approve ? "approved" : "rejected" } : app
+  //     )
+  //   );
+  // };
 
-  const handleTutorDecision = (id: number, approve: boolean) => {
-    setTutorApps((prev) =>
-      prev.map((app) =>
-        app.id === id ? { ...app, status: approve ? "approved" : "rejected" } : app
-      )
-    );
-  };
+  // const handleTutorDecision = (id: number, approve: boolean) => {
+  //   setTutorApps((prev) =>
+  //     prev.map((app) =>
+  //       app.id === id ? { ...app, status: approve ? "approved" : "rejected" } : app
+  //     )
+  //   );
+  // };
 
-  const assignTutorToCourse = (tutorId: number, course: string) => {
-    setAssignments((prev) => [...prev, { tutorId, course }]);
-  };
+  // const assignTutorToCourse = (tutorId: number, course: string) => {
+  //   setAssignments((prev) => [...prev, { tutorId, course }]);
+  // };
 
   return (
     <div className="flex min-h-screen bg-gray-50">

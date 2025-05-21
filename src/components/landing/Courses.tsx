@@ -1,294 +1,305 @@
-"use client";
-
 import React, { useState } from "react";
+import Image from 'next/image';
 
-// Type definitions for course and tab keys
+
+// Type definitions for course and category
 type Course = {
   id: string;
   title: string;
   instructor: string;
+  instructorImage: string;
   duration: string;
-  level: "Beginner" | "Intermediate" | "Advanced";
+  lectures: number;
   rating: number;
-  students: number;
   price: number;
+  originalPrice?: number;
   image: string;
+  category: string;
 };
 
-type TabKey = "engineering" | "design" | "marketing";
+// type CategoryKey = "ui-ux" | "development" | "data-science" | "business" | "financial";
 
-const coursesData: Record<TabKey, Course[]> = {
-  engineering: [
-    {
-      id: "eng-1",
-      title: "Introduction to Web Development",
-      instructor: "Dr. Sarah Johnson",
-      duration: "8 weeks",
-      level: "Beginner",
-      rating: 4.8,
-      students: 2453,
-      price: 79.99,
-      image: "/image1.jpg"
-    },
-    {
-      id: "eng-2",
-      title: "Advanced Data Structures & Algorithms",
-      instructor: "Prof. Michael Chen",
-      duration: "12 weeks",
-      level: "Advanced",
-      rating: 4.9,
-      students: 1862,
-      price: 99.99,
-      image: "/image2.jpg"
-    },
-    {
-      id: "eng-3",
-      title: "Mobile App Development with React Native",
-      instructor: "James Wilson",
-      duration: "10 weeks",
-      level: "Intermediate",
-      rating: 4.7,
-      students: 3214,
-      price: 89.99,
-      image: "/image3.jpg"
-    },
-    {
-      id: "eng-4",
-      title: "Cloud Architecture & DevOps",
-      instructor: "Emma Rodriguez",
-      duration: "8 weeks",
-      level: "Intermediate",
-      rating: 4.6,
-      students: 1728,
-      price: 94.99,
-      image: "/image4.jpg"
-    }
-  ],
-  design: [
-    {
-      id: "des-1",
-      title: "UI/UX Design Principles",
-      instructor: "Alex Turner",
-      duration: "6 weeks",
-      level: "Beginner",
-      rating: 4.9,
-      students: 3782,
-      price: 69.99,
-      image: "/image4.jpg"
-    },
-    {
-      id: "des-2",
-      title: "Advanced Adobe Photoshop Techniques",
-      instructor: "Lisa Wang",
-      duration: "8 weeks",
-      level: "Advanced",
-      rating: 4.8,
-      students: 2146,
-      price: 84.99,
-      image: "/image2.jpg"
-    },
-    {
-      id: "des-3",
-      title: "Motion Graphics & Animation",
-      instructor: "David Miller",
-      duration: "10 weeks",
-      level: "Intermediate",
-      rating: 4.7,
-      students: 1893,
-      price: 89.99,
-      image: "/image3.jpg"
-    },
-    {
-      id: "des-4",
-      title: "Product Design Masterclass",
-      instructor: "Sofia Patel",
-      duration: "12 weeks",
-      level: "Advanced",
-      rating: 4.9,
-      students: 1247,
-      price: 129.99,
-      image: "/image4.jpg"
-    }
-  ],
-  marketing: [
-    {
-      id: "mkt-1",
-      title: "Digital Marketing Fundamentals",
-      instructor: "Robert Garcia",
-      duration: "6 weeks",
-      level: "Beginner",
-      rating: 4.6,
-      students: 4215,
-      price: 59.99,
-      image: "/image2.jpg"
-    },
-    {
-      id: "mkt-2",
-      title: "Social Media Strategy & Analytics",
-      instructor: "Jennifer Lee",
-      duration: "8 weeks",
-      level: "Intermediate",
-      rating: 4.8,
-      students: 3127,
-      price: 79.99,
-      image: "/image1.jpg"
-    },
-    {
-      id: "mkt-3",
-      title: "Content Marketing & SEO",
-      instructor: "Thomas Black",
-      duration: "10 weeks",
-      level: "Intermediate",
-      rating: 4.7,
-      students: 2834,
-      price: 84.99,
-      image: "/image3.jpg"
-    },
-    {
-      id: "mkt-4",
-      title: "Brand Management & Strategy",
-      instructor: "Olivia Martinez",
-      duration: "12 weeks",
-      level: "Advanced",
-      rating: 4.9,
-      students: 1956,
-      price: 99.99,
-      image: "/image2.jpg"
-    }
-  ]
-};
+// Course data
+const coursesData: Course[] = [
+  {
+    id: "ds-1",
+    title: "Data Science and Machine Learning with Python - Hands On!",
+    instructor: "Jason Williams",
+    instructorImage: "/image1.jpg",
+    duration: "08 hr 15 mins",
+    lectures: 29,
+    rating: 4.9,
+    price: 385.00,
+    originalPrice: 440.00,
+    image: "/image1.jpg",
+    category: "data-science"
+  },
+  {
+    id: "ux-1",
+    title: "Create Amazing Color Schemes for Your UX Design Projects",
+    instructor: "Pamela Foster",
+    instructorImage: "/image1.jpg",
+    duration: "08 hr 15 mins",
+    lectures: 29,
+    rating: 4.9,
+    price: 420.00,
+    image: "/image1.jpg",
+    category: "ui-ux"
+  },
+  {
+    id: "bus-1",
+    title: "Culture & Leadership: Strategies for a Successful Business",
+    instructor: "Rose Simmons",
+    instructorImage: "/image1.jpg",
+    duration: "08 hr 15 mins",
+    lectures: 29,
+    rating: 4.9,
+    price: 295.00,
+    originalPrice: 340.00,
+    image: "/image1.jpg",
+    category: "business"
+  },
+  {
+    id: "fin-1",
+    title: "Finance Series: Learn to Budget and Calculate your Net Worth",
+    instructor: "Jason Williams",
+    instructorImage: "/image1.jpg",
+    duration: "08 hr 15 mins",
+    lectures: 29,
+    rating: 4.9,
+    price: 0,
+    image: "/image1.jpg",
+    category: "financial"
+  },
+  {
+    id: "mkt-1",
+    title: "Build Brand into Marketing: Tackling the New Marketing Landscape",
+    instructor: "Jason Williams",
+    instructorImage: "/image1.jpg",
+    duration: "08 hr 15 mins",
+    lectures: 29,
+    rating: 4.9,
+    price: 136.00,
+    image: "/image1.jpg",
+    category: "marketing"
+  },
+  {
+    id: "des-1",
+    title: "Graphic Design: Illustrating Badges and Icons with Geometric Shapes",
+    instructor: "Jason Williams",
+    instructorImage: "/image1.jpg",
+    duration: "08 hr 15 mins",
+    lectures: 29,
+    rating: 4.9,
+    price: 237.00,
+    image: "/image1.jpg",
+    category: "design"
+  }
+];
 
+// Category data
+const categories = [
+  { id: "ui-ux", label: "UI/UX Design" },
+  { id: "development", label: "Development" },
+  { id: "data-science", label: "Data Science" },
+  { id: "business", label: "Business" },
+  { id: "financial", label: "Financial" }
+];
+
+// Star Rating component
 const StarRating = ({ rating }: { rating: number }) => {
   return (
     <div className="flex items-center">
       {[...Array(5)].map((_, i) => (
         <svg 
           key={i} 
-          className={`w-4 h-4 ${i < Math.floor(rating) ? "text-yellow-400" : "text-gray-300"}`}
-          fill="currentColor" 
-          viewBox="0 0 20 20"
+          className={`w-4 h-4 text-yellow-400`}
+          fill={i < Math.floor(rating) ? "currentColor" : "none"}
+          stroke="currentColor"
+          viewBox="0 0 24 24"
         >
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
         </svg>
       ))}
-      <span className="ml-1 text-sm font-medium text-gray-600">{rating}</span>
+      <span className="ml-1 text-sm text-gray-600">{rating}</span>
     </div>
   );
 };
 
-// Badge component for course level
-const LevelBadge = ({ level }: { level: "Beginner" | "Intermediate" | "Advanced" }) => (
-  <span
-    className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${
-      level === "Beginner"
-        ? "bg-emerald-100 text-emerald-700"
-        : level === "Intermediate"
-        ? "bg-yellow-100 text-yellow-700"
-        : "bg-red-100 text-red-700"
-    }`}
-  >
-    {level}
-  </span>
-);
+// Category badge component
+const CategoryBadge = ({ category }: { category: string }) => {
+  const colors: Record<string, string> = {
+    "science": "bg-green-100 text-green-800",
+    "finance": "bg-blue-100 text-blue-800",
+    "marketing": "bg-yellow-100 text-yellow-800",
+    "design": "bg-purple-100 text-purple-800",
+    "default": "bg-gray-100 text-gray-800"
+  };
 
-const CourseListings = () => {
-  const [activeTab, setActiveTab] = useState<TabKey>("engineering");
-  
-  // Tab options
-  const tabs = [
-    { id: "engineering", label: "Engineering" },
-    { id: "design", label: "Design" },
-    { id: "marketing", label: "Marketing" }
-  ];
+  const getColorClass = () => {
+    for (const [key, value] of Object.entries(colors)) {
+      if (category.toLowerCase().includes(key.toLowerCase())) {
+        return value;
+      }
+    }
+    return colors.default;
+  };
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      {/* Heading */}
-      <div className="mb-12 max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">
-          Explore our
-        </h2>
-        <div className="flex items-center mb-8">
-          <h3 className="text-3xl md:text-4xl font-bold text-gray-900">Popular <span className="text-orange-500">courses</span></h3>
-          <div className="h-1 w-12 bg-emerald-500 ml-4"></div>
+    <span className={`px-3 py-1 text-xs font-medium rounded-full ${getColorClass()}`}>
+      {category}
+    </span>
+  );
+};
+
+const EduleCourseListings = () => {
+  const [activeCategory, setActiveCategory] = useState<string>("ui-ux");
+  
+  // Filter courses or show all if "all" is selected
+  const displayedCourses = coursesData;
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      {/* Header with search */}
+      <div className="flex flex-col lg:flex-row justify-between items-center mb-8">
+        <div className="text-2xl font-bold text-gray-800 mb-4 lg:mb-0 flex items-center">
+          <span className="mr-2">All</span> 
+          <span className="text-green-600">Courses</span> 
+          <span className="ml-2">of Edule</span>
+          <div className="h-1 w-16 bg-green-500 ml-2 rounded"></div>
         </div>
         
-        {/* Tabs */}
-        <div className="flex justify-end mb-6">
-          <div className="inline-flex rounded-lg shadow-sm" role="group">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                type="button"
-                className={`px-6 py-2 text-sm font-medium ${
-                  activeTab === tab.id
-                    ? "bg-emerald-500 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                } ${
-                  tab.id === "engineering" ? "rounded-l-lg" : ""
-                } ${
-                  tab.id === "marketing" ? "rounded-r-lg" : ""
-                } border border-gray-200`}
-                onClick={() => setActiveTab(tab.id as TabKey)}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+        <div className="relative w-full lg:w-64">
+          <input
+            type="text"
+            placeholder="Search your course"
+            className="w-full border border-gray-300 rounded-md py-2 px-4 pr-10 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <button className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 bg-green-100 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
         </div>
       </div>
-
-      {/* Course Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-        {coursesData[activeTab].map(course => (
-          <div key={course.id} className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+      
+      {/* Category filter */}
+      <div className="relative bg-green-50 p-6 rounded-lg mb-8">
+        <button className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        <div className="flex justify-center overflow-x-auto px-8">
+          {categories.map(category => (
+            <button
+              key={category.id}
+              className={`mx-2 px-6 py-2 rounded-md transition-all ${
+                activeCategory === category.id
+                  ? "bg-white text-green-600 shadow-md font-semibold border border-green-200"
+                  : "bg-transparent text-gray-700 hover:bg-white"
+              }`}
+              onClick={() => setActiveCategory(category.id)}
+            >
+              {category.label}
+            </button>
+          ))}
+        </div>
+        
+        <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+      
+      {/* Course Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {displayedCourses.map(course => (
+          <div key={course.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
             {/* Course Image */}
             <div className="relative">
-              <img 
-                src={course.image} 
+              <Image
+               src={course.image} 
                 alt={course.title} 
-                className="w-full h-48 object-cover"
+                width={600} // replace with your actual image width
+                height={600} // replace with your actual image height
+              className="w-full h-48 object-cover"
               />
-              <div className="absolute top-4 right-4">
-                <LevelBadge level={course.level} />
-              </div>
+
+             
             </div>
             
             {/* Course Content */}
             <div className="p-5">
-              <h3 className="text-lg font-semibold mb-2 text-gray-800 line-clamp-2">{course.title}</h3>
-              
-              <div className="flex items-center mb-3">
-                <div className="w-6 h-6 rounded-full bg-gray-200 mr-2"></div>
-                <span className="text-sm text-gray-600">{course.instructor}</span>
-              </div>
-              
-              <div className="flex items-center justify-between mb-3">
-                <StarRating rating={course.rating} />
-                <span className="text-sm text-gray-500">{course.students.toLocaleString()} students</span>
-              </div>
-              
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm text-gray-600">{course.duration}</span>
-                <span className="text-emerald-500 font-bold">${course.price}</span>
+                <div className="flex items-center">
+                  <Image
+                   src={course.instructorImage} 
+                    alt={course.instructor}
+                    width={200} // replace with your actual image width
+                    height={600} // replace with your actual image height
+                      className="w-10 h-10 rounded-full object-cover mr-2" 
+                  />
+
+                 
+                  <span className="text-sm text-gray-700">{course.instructor}</span>
+                </div>
+                <CategoryBadge category="Science" />
               </div>
               
-              <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2 px-4 rounded-lg transition-colors duration-200">
-                Enroll Now
-              </button>
+              <h3 className="text-lg font-semibold mb-3 text-gray-800 line-clamp-2 h-14">
+                {course.title}
+              </h3>
+              
+              <div className="flex items-center justify-between mb-3 text-gray-600">
+                <div className="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-xs">{course.duration}</span>
+                </div>
+                <div className="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                  <span className="text-xs">{course.lectures} Lectures</span>
+                </div>
+              </div>
+              
+              <hr className="my-3" />
+              
+              <div className="flex items-center justify-between">
+                <div>
+                  {course.price === 0 ? (
+                    <span className="text-green-600 font-semibold text-lg">Free</span>
+                  ) : (
+                    <div className="flex items-center">
+                      <span className="text-green-600 font-bold text-lg">${course.price.toFixed(2)}</span>
+                      {course.originalPrice && (
+                        <span className="text-gray-400 line-through text-sm ml-2">
+                          ${course.originalPrice.toFixed(2)}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <StarRating rating={course.rating} />
+              </div>
             </div>
           </div>
         ))}
       </div>
       
-      {/* View All Courses Button */}
+      {/* "Other Course" Button */}
       <div className="flex justify-center mt-12">
-        <button className="bg-white border-2 border-emerald-500 text-emerald-500 hover:bg-emerald-50 font-semibold py-3 px-8 rounded-lg transition-colors duration-200">
-          View All Courses
+        <button className="bg-white border border-green-500 text-green-600 hover:bg-green-50 font-medium py-3 px-8 rounded-lg transition-colors duration-200">
+          Other Course
         </button>
       </div>
     </div>
   );
 };
 
-export default CourseListings;
+export default EduleCourseListings;
