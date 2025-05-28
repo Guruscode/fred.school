@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 interface CategoryCard {
@@ -13,7 +13,7 @@ interface CategoryCard {
 }
 
 const Hero: React.FC = () => {
-  const [hoveredCard, setHoveredCard] = useState<number | null>(1);
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   const categories: CategoryCard[] = [
     {
@@ -59,74 +59,149 @@ const Hero: React.FC = () => {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-16">
-      <h1 className="text-4xl md:text-6xl lg:text-7xl font-extralight text-center mb-4 leading-tight tracking-wide">
-        Learn with{" "}
-        <span className="relative inline-block">
-          <span className="relative z-10">experts</span>
-          <span className="absolute inset-0 bg-pink-200 rounded-full -z-0 transform scale-110"></span>
-        </span>{" "}
-        Get Certified
-        <br />
-        <span className="relative inline-block">
-          <span className="relative z-10">Build a Globally </span>
-          <span className="absolute inset-0 bg-green-100 rounded-full -z-0 transform scale-110"></span>
-        </span>{" "}
-        Relevant Career
-        <div className="relative">
-          <div className="h-1 w-64 bg-yellow-300 mx-auto mt-2"></div>
+    <>
+      <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(25px) scale(0.98);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        @keyframes glowPulse {
+          0%, 100% {
+            box-shadow: 0 0 10px 3px rgba(59, 130, 246, 0.4);
+          }
+          50% {
+            box-shadow: 0 0 20px 8px rgba(59, 130, 246, 0.6);
+          }
+        }
+        @keyframes cardReveal {
+          from {
+            opacity: 0;
+            transform: translateY(35px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        @keyframes textGlow {
+          0%, 100% {
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+          }
+          50% {
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+          }
+        }
+        .animate-fadeInUp {
+          animation: fadeInUp 0.9s ease-out forwards;
+        }
+        .animate-glowPulse {
+          animation: glowPulse 2.5s infinite ease-in-out;
+        }
+        .animate-cardReveal {
+          animation: cardReveal 0.7s ease-out forwards;
+        }
+        .animate-textGlow {
+          animation: textGlow 2s infinite ease-in-out;
+        }
+        .card-delay-1 { animation-delay: 0.2s; }
+        .card-delay-2 { animation-delay: 0.4s; }
+        .card-delay-3 { animation-delay: 0.6s; }
+        .card-delay-4 { animation-delay: 0.8s; }
+        .card-delay-5 { animation-delay: 1s; }
+        .glass-effect {
+          background: rgba(255, 255, 255, 0.15);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+      `}</style>
+      <section className="relative container mx-auto px-6 py-16 md:py-32 bg-gradient-to-br  overflow-hidden">
+        {/* Background Decoration */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-blue-200 rounded-full mix-blend-screen filter blur-3xl opacity-40 animate-pulse"></div>
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-200 rounded-full mix-blend-screen filter blur-3xl opacity-40 animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-pink-200 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-pulse delay-500"></div>
         </div>
-      </h1>
 
-      <p className="text-gray-600 text-center max-w-4xl mx-auto mb-10 px-4 text-base leading-relaxed">
-        Pick the best courses from our platform and get access to top tutors and mentors.
-        We provide you with an exceptional learning experience to help you build a lucrative tech career.
-      </p>
+        {/* Hero Title */}
+        <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold text-center mb-8 leading-tight tracking-tight text-gray-900">
+          <span className="animate-fadeInUp" style={{ animationDelay: "0.2s" }}>
+            Learn with{" "}
+            <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 animate-textGlow">
+              Experts
+              <span className="absolute -bottom-3 left-0 w-full h-3 bg-blue-300/50 rounded-full transform scale-x-110 blur-sm"></span>
+            </span>{" "}
+          </span>
+          <span className="animate-fadeInUp" style={{ animationDelay: "0.4s" }}>
+            & Get Certified
+          </span>
+          <br />
+          <span className="animate-fadeInUp" style={{ animationDelay: "0.6s" }}>
+            <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-teal-500 animate-textGlow">
+              Build a Globally Relevant Career
+              <span className="absolute -bottom-3 left-0 w-full h-3 bg-green-300/50 rounded-full transform scale-x-110 blur-sm"></span>
+            </span>
+          </span>
+        </h1>
 
-    <div className="flex justify-center mb-12">
-        <Link href="/apply">
-          <button className="bg-black text-white px-6 py-3 rounded-full flex items-center gap-2 font-medium shadow-md hover:bg-gray-900 hover:scale-105 transition-all duration-200 ease-in-out">
-            <span>Apply for a Course</span>
-            <ChevronDown className="text-white" size={18} />
-          </button>
-        </Link>
-      </div>
+        {/* Hero Description */}
+        <p
+          className="text-gray-700 text-center max-w-4xl mx-auto mb-12 px-4 text-lg md:text-xl leading-relaxed font-medium animate-fadeInUp"
+          style={{ animationDelay: "0.8s" }}
+        >
+          Discover top-tier courses, learn from industry experts, and gain certifications to propel your tech career forward with our cutting-edge platform.
+        </p>
 
-      <div className="flex flex-nowrap gap-4 md:gap-6 overflow-x-auto pb-6 md:pb-8 px-2">
-        {categories.map((card) => (
-          <div
-            key={card.id}
-            className="relative flex-shrink-0 rounded-2xl overflow-hidden w-64 h-72 cursor-pointer shadow-md"
-            onMouseEnter={() => setHoveredCard(card.id)}
-            onMouseLeave={() => setHoveredCard(null)}
-            onTouchStart={() => setHoveredCard(card.id === hoveredCard ? null : card.id)}
-          >
-            <div className="absolute inset-0 bg-gray-200">
-              <div className="w-full h-full relative">
-                <div
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: `url(${card.imageSrc})` }}
-                ></div>
-              </div>
-            </div>
+        {/* Call to Action Button */}
+        <div className="flex justify-center mb-16 animate-fadeInUp" style={{ animationDelay: "1s" }}>
+          <Link href="/apply">
+            <button className="group glass-effect text-white px-10 py-5 rounded-full flex items-center gap-4 font-semibold text-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-500 ease-in-out animate-glowPulse">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">Apply for a Course</span>
+              <ArrowRight size={24} className="text-blue-400 group-hover:translate-x-2 transition-transform duration-300" />
+            </button>
+          </Link>
+        </div>
 
-            {hoveredCard === card.id && (
-              <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end p-6 transition-opacity duration-200">
-                <h3 className="text-white text-xl font-medium mb-1">
-                  {card.title}
-                </h3>
-                <p className="text-white text-sm mb-4">{card.description}</p>
+        {/* Category Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 px-4 max-w-7xl mx-auto">
+          {categories.map((card, index) => (
+            <div
+              key={card.id}
+              className={`relative rounded-2xl overflow-hidden w-full h-80 cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 group animate-cardReveal card-delay-${card.id}`}
+              onMouseEnter={() => setHoveredCard(card.id)}
+              onMouseLeave={() => setHoveredCard(null)}
+              onTouchStart={() => setHoveredCard(card.id === hoveredCard ? null : card.id)}
+            >
+              {/* Card Image */}
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                style={{ backgroundImage: `url(${card.imageSrc})` }}
+              ></div>
+
+              {/* Card Overlay */}
+              <div
+                className={`absolute inset-0 glass-effect flex flex-col justify-end p-6 transition-opacity duration-500 ${
+                  hoveredCard === card.id ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                <h3 className="text-white text-xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-200 animate-textGlow">{card.title}</h3>
+                <p className="text-gray-100 text-sm mb-4 font-medium">{card.description}</p>
                 <div className="flex items-center">
-                  <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center">
-                    <ArrowRight size={16} />
+                  <div className="h-10 w-10 glass-effect rounded-full flex items-center justify-center shadow-md transform transition-transform duration-300 group-hover:scale-110">
+                    <ArrowRight size= {18} className="text-blue-400" />
                   </div>
                 </div>
               </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
   );
 };
 

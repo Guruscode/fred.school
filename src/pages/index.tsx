@@ -5,6 +5,8 @@ import JoinCourses from '@/components/landing/JoinCourses';
 import CallToAction from '@/components/landing/CallToAction';
 import Footer from '@/components/layout/Footer';
 import Navbar from '@/components/layout/Navbar';
+import WorkWithUs from "@/components/landing/work-cta"
+import FAQSection from "@/components/landing/faq"
 // import Testimonials from '@/components/landing/Testimonials';
 import MentorsSection from '@/components/landing/Tutors';
 
@@ -15,10 +17,13 @@ export default function HomePage() {
       <Hero />
       <JoinCourses />
       <Courses />
+     
       <MentorsSection />
    
       {/* <Testimonials /> */}
-      <CallToAction />
+      {/* <CallToAction /> */}
+       <WorkWithUs />
+      <FAQSection />
       <Footer />
     </LandingLayout>
   );

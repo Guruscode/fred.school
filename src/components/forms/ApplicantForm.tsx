@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { CheckCircle, ChevronRight, ChevronLeft, CreditCard, Book, User, Info, HelpCircle, Calendar, Mail, Phone, Globe, Award, AlertCircle } from 'lucide-react';
+import apiService from '../../../services/onboard';
 
 // Define interfaces for form data
 interface PersonalInfo {
@@ -76,6 +78,8 @@ const Apply: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [voucherApplied, setVoucherApplied] = useState(false);
   const [voucherMessage, setVoucherMessage] = useState('');
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Animation effect when changing steps
   useEffect(() => {
@@ -116,7 +120,7 @@ const Apply: React.FC = () => {
     if (!personalInfo.gender) newErrors.gender = 'Gender is required';
     if (!personalInfo.dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
     if (!personalInfo.academicAchievement) newErrors.academicAchievement = 'Academic achievement is required';
-    if (!personalInfo.ageRange) newErrors.ageRange = 'Age range is required';
+    if (!personalInfo.ageRange) newErrors.ageRange = 'Age Range is required';
     if (!personalInfo.country) newErrors.country = 'Country is required';
     if (!personalInfo.state) newErrors.state = 'State is required';
     if (!personalInfo.howDidYouHear) newErrors.howDidYouHear = 'This field is required';
@@ -124,7 +128,7 @@ const Apply: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Validate course info
+  // Validate course information
   const validateCourseInfo = () => {
     const newErrors: Record<string, string> = {};
     if (!courseInfo.course) newErrors.course = 'Course is required';
@@ -152,17 +156,59 @@ const Apply: React.FC = () => {
     }
   };
 
-  const handlePaymentSubmit = (e: React.FormEvent) => {
+  // Handle payment submission
+  const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Payment submitted:', { personalInfo, courseInfo, paymentInfo });
-    // Simulate payment processing
-    router.push('/success'); // Redirect to a success page (not implemented)
+    setIsSubmitting(true);
+    setSubmissionError(null);
+
+    try {
+      const payload = {
+        first_name: personalInfo.firstName,
+        last_name: personalInfo.lastName,
+        email: personalInfo.email,
+        phone_number: personalInfo.phoneNumber,
+        gender: personalInfo.gender,
+        date_of_birth: personalInfo.dateOfBirth,
+        academic_achievement: personalInfo.academicAchievement,
+        age_range: personalInfo.ageRange,
+        country: personalInfo.country,
+        state: personalInfo.state,
+        how_did_you_hear: personalInfo.howDidYouHear,
+        advisor_id: personalInfo.advisorId || null,
+        course: courseInfo.course,
+        cohort: courseInfo.cohort,
+        class_format: courseInfo.classFormat,
+        payment_plan: courseInfo.paymentPlan,
+        currency: courseInfo.currency,
+        voucher: courseInfo.voucher || null,
+        student_policy: courseInfo.studentPolicy,
+        course_fee: paymentInfo.courseFee,
+        amount_to_pay: paymentInfo.amountToPay,
+        balance_to_pay: paymentInfo.balanceToPay,
+        transaction_fee: paymentInfo.transactionFee,
+        total_amount_due: voucherApplied
+          ? paymentInfo.amountToPay * 0.9 + paymentInfo.transactionFee
+          : paymentInfo.totalAmountDue,
+        currency_symbol: paymentInfo.currencySymbol,
+      };
+
+      const response = await apiService.submitStudentApplication(payload);
+      if (response.payment_url) {
+        window.location.href = response.payment_url; // Redirect to Paystack
+      } else {
+        router.push('/success');
+      }
+    } catch (error: any) {
+      setSubmissionError(error.message || 'Failed to submit application');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Apply voucher handler
   const handleApplyVoucher = () => {
     if (courseInfo.voucher.trim()) {
-      // Simulate voucher validation
       if (courseInfo.voucher.toLowerCase() === 'fredmind2025') {
         setVoucherApplied(true);
         setVoucherMessage('Voucher applied successfully! 10% discount');
@@ -236,6 +282,14 @@ const Apply: React.FC = () => {
             ))}
           </div>
         </div>
+
+        {/* Submission Error */}
+        {submissionError && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex items-center text-red-600">
+            <AlertCircle size={18} className="mr-2" />
+            {submissionError}
+          </div>
+        )}
 
         {/* Step 1: Personal Information */}
         {step === 1 && (
@@ -389,8 +443,8 @@ const Apply: React.FC = () => {
                     >
                       <option value="" disabled>Select your highest education</option>
                       <option value="High School">High School</option>
-                      <option value="Bachelor's Degree">Bachelors Degree</option>
-                      <option value="Master's Degree">Masters Degree</option>
+                      <option value="Bachelor's Degree">Bachelor's Degree</option>
+                      <option value="Master's Degree">Master's Degree</option>
                       <option value="PhD">PhD</option>
                     </select>
                   </div>
@@ -772,7 +826,7 @@ const Apply: React.FC = () => {
                     className="mt-1"
                   />
                   <label htmlFor="studentPolicy" className="ml-2 text-sm text-gray-700">
-                    I agree to Fredmind Schools{' '}
+                    I agree to Fredmind School's{' '}
                     <Link href="#" className="text-green-600 hover:underline font-medium">
                       Terms of Service
                     </Link>{' '}
@@ -997,12 +1051,19 @@ const Apply: React.FC = () => {
                   <form onSubmit={handlePaymentSubmit} className="mt-6">
                     <button 
                       type="submit" 
-                      className="w-full bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 flex items-center justify-center font-medium shadow-md"
+                      disabled={isSubmitting}
+                      className={`w-full px-4 py-3 rounded-lg flex items-center justify-center font-medium shadow-md transition-colors duration-300 ${
+                        isSubmitting
+                          ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                          : 'bg-green-600 text-white hover:bg-green-700'
+                      }`}
                     >
                       <CreditCard size={18} className="mr-2" />
-                      Pay {`${paymentInfo.currencySymbol}${voucherApplied 
-                        ? ((paymentInfo.amountToPay * 0.9) + paymentInfo.transactionFee).toLocaleString() 
-                        : paymentInfo.totalAmountDue.toLocaleString()}`}
+                      {isSubmitting
+                        ? 'Processing...'
+                        : `Pay ${paymentInfo.currencySymbol}${voucherApplied 
+                            ? ((paymentInfo.amountToPay * 0.9) + paymentInfo.transactionFee).toLocaleString() 
+                            : paymentInfo.totalAmountDue.toLocaleString()}`}
                     </button>
                   </form>
                   
@@ -1037,7 +1098,7 @@ const Apply: React.FC = () => {
         
         {/* Footer */}
         <div className="text-center text-gray-500 text-sm mt-8">
-          &copy; {new Date().getFullYear()} Fredmind School. All rights reserved.
+          © {new Date().getFullYear()} Fredmind School. All rights reserved.
         </div>
       </div>
     </div>

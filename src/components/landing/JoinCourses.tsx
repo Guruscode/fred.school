@@ -40,10 +40,10 @@ const JoinCourses: React.FC = () => {
       {/* Heading */}
       <div className="mb-16 md:mb-24 max-w-6xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">
-          The way you join
+         Building future-proof  
         </h2>
         <div className="flex items-center">
-          <h3 className="text-3xl md:text-4xl font-bold text-gray-900">Our <span className="text-orange-500">courses</span></h3>
+          <h3 className="text-3xl md:text-4xl font-bold text-gray-900">Talent on <span className="text-orange-500">a Global Scale</span></h3>
           <div className="h-1 w-12 bg-emerald-500 ml-4"></div>
         </div>
       </div>
@@ -55,9 +55,10 @@ const JoinCourses: React.FC = () => {
           <div className="w-28 h-28 rounded-full bg-emerald-500 flex items-center justify-center mb-6">
             <BinocularsIcon />
           </div>
-          <h4 className="text-2xl font-semibold mb-3 text-gray-800">Find Your Courses</h4>
+          <h4 className="text-2xl font-semibold mb-3 text-gray-800">For Individuals</h4>
           <p className="text-gray-600 max-w-xs text-center">
-            we have helped our worldwide students to get into the most popular courses
+            Earn a Tech Diploma and master the skills that will help you achieve a career change, workplace
+            promotion, or even international job opportunities.
           </p>
         </div>
 
@@ -66,9 +67,9 @@ const JoinCourses: React.FC = () => {
           <div className="w-28 h-28 rounded-full bg-blue-400 flex items-center justify-center mb-6">
             <ClickIcon />
           </div>
-          <h4 className="text-2xl font-semibold mb-3 text-gray-800">Book Your Seat</h4>
+          <h4 className="text-2xl font-semibold mb-3 text-gray-800">For Corporates</h4>
           <p className="text-gray-600 max-w-xs text-center">
-            get the frist prioroty to book your seat and learn what you desire
+            Build your dream team with Fredmind Digital School. Hire our top graduates to bring your vision to life.
           </p>
         </div>
 
@@ -77,9 +78,10 @@ const JoinCourses: React.FC = () => {
           <div className="w-28 h-28 rounded-full bg-orange-500 flex items-center justify-center mb-6">
             <CertificateIcon />
           </div>
-          <h4 className="text-2xl font-semibold mb-3 text-gray-800">Get Certificate</h4>
+          <h4 className="text-2xl font-semibold mb-3 text-gray-800">For Impact</h4>
           <p className="text-gray-600 max-w-xs text-center">
-            after completing your courses we provide you renowned certificate
+            Fredmind Digital School’s Scholarship Program is committed to providing free tech education to ten
+            thousand underprivileged young Africans.
           </p>
         </div>
 

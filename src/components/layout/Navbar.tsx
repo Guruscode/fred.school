@@ -32,23 +32,26 @@ const Navbar: React.FC = () => {
           <Link href="/" className="font-medium text-gray-800 hover:text-gray-600">
             Home
           </Link>
-          <Link href="/" className="font-medium text-gray-600 hover:text-gray-800">
+          <Link href="/our-approach" className="font-medium text-gray-600 hover:text-gray-800">
             Our Approach
           </Link>
-          <Link href="/" className="font-medium text-gray-600 hover:text-gray-800">
-            Insights
+           <Link href="/our-approach" className="font-medium text-gray-600 hover:text-gray-800">
+            TechStarts
           </Link>
+          
           <Link href="/" className="font-medium text-gray-600 hover:text-gray-800">
             Resources
           </Link>
+            <Link href="/" className="font-medium text-gray-600 hover:text-gray-800">
+            Scholarships
+          </Link>
+          
           
         </div>
 
         {/* Right Side Buttons */}
         <div className="hidden md:flex items-center space-x-4">
-          <Link href="/apply" className="font-medium text-gray-800 hover:text-gray-600">
-            Sign up
-          </Link>
+         
           <Link
             href="/teach"
             className="bg-black text-white font-medium px-4 py-2 rounded-full hover:bg-gray-800 flex items-center"
