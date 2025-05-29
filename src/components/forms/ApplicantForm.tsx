@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { CheckCircle, ChevronRight, ChevronLeft, CreditCard, Book, User, Info, HelpCircle, Calendar, Mail, Phone, Globe, Award, AlertCircle } from 'lucide-react';
 import apiService from '../../../services/onboard';
 
-// Define interfaces for form data
+// Define interfaces for form data (unchanged)
 interface PersonalInfo {
   firstName: string;
   lastName: string;
@@ -247,14 +246,14 @@ const Apply: React.FC = () => {
   // Format input class based on errors
   const getInputClass = (fieldName: string) => {
     return `mt-1 block w-full p-3 border ${
-      errors[fieldName] ? 'border-red-300 bg-red-50' : 'border-gray-200'
-    } rounded-lg transition-all duration-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none`;
+      errors[fieldName] ? 'border-red-300 bg-red-50' : 'border-gray-300'
+    } rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 outline-none transition-all duration-300`;
   };
 
   // Get step status class
   const getStepStatusClass = (stepNumber: number) => {
     if (step === stepNumber) {
-      return 'bg-green-600 text-white';
+      return 'bg-yellow-400 text-gray-900';
     } else if (step > stepNumber) {
       return 'bg-green-500 text-white';
     }
@@ -262,30 +261,30 @@ const Apply: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
-      <div className="container mx-auto px-4 py-8 max-w-5xl">
+    <div className="min-h-screen bg-gray-100 font-sans">
+      <div className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-green-900 to-green-400 rounded-xl p-8 text-white text-center shadow-lg mb-8">
-          <h1 className="text-4xl font-bold mb-2">Join Fredmind School</h1>
-          <p className="text-lg font-light opacity-90">Complete your admission form to start your educational journey</p>
+        <div className="bg-gradient-to-r from-yellow-400 to-green-500 rounded-xl p-8 text-white text-center shadow-xl mb-10">
+          <h1 className="text-4xl md:text-5xl font-bold mb-3">Join Fredmind School</h1>
+          <p className="text-lg md:text-xl font-light opacity-90">Embark on your educational journey with us</p>
         </div>
 
         {/* Progress Indicator */}
         <div className="relative mb-12">
-          <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -translate-y-1/2"></div>
+          <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-200 rounded-full -translate-y-1/2"></div>
           <div className="flex justify-between relative z-10">
             {[
-              { label: 'Personal Info', icon: <User size={18} /> },
-              { label: 'Course Selection', icon: <Book size={18} /> },
-              { label: 'Summary', icon: <CreditCard size={18} /> }
+              { label: 'Personal Info', icon: <User size={20} /> },
+              { label: 'Course Selection', icon: <Book size={20} /> },
+              { label: 'Summary', icon: <CreditCard size={20} /> }
             ].map((item, index) => (
               <div key={index} className="flex flex-col items-center">
                 <div 
-                  className={`flex items-center justify-center w-12 h-12 rounded-full ${getStepStatusClass(index + 1)} shadow-md transition-all duration-500`}
+                  className={`flex items-center justify-center w-14 h-14 rounded-full ${getStepStatusClass(index + 1)} shadow-lg transition-all duration-500`}
                 >
-                  {step > index + 1 ? <CheckCircle size={22} /> : item.icon}
+                  {step > index + 1 ? <CheckCircle size={24} /> : item.icon}
                 </div>
-                <span className={`mt-2 text-sm font-medium ${step === index + 1 ? 'text-green-600' : 'text-gray-600'}`}>
+                <span className={`mt-3 text-sm font-medium ${step === index + 1 ? 'text-yellow-500' : 'text-gray-600'}`}>
                   {item.label}
                 </span>
               </div>
@@ -295,26 +294,26 @@ const Apply: React.FC = () => {
 
         {/* Submission Error */}
         {submissionError && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex items-center text-red-600">
-            <AlertCircle size={18} className="mr-2" />
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-center text-red-600 shadow-sm">
+            <AlertCircle size={20} className="mr-2" />
             {submissionError}
           </div>
         )}
 
         {/* Step 1: Personal Information */}
         {step === 1 && (
-          <div className={`bg-white shadow-lg rounded-xl p-6 md:p-8 ${animateStep ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-4'} transition-all duration-500`}>
+          <div className={`bg-white shadow-xl rounded-xl p-6 md:p-8 ${animateStep ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-4'} transition-all duration-500`}>
             <div className="border-b border-gray-100 pb-4 mb-6">
-              <h3 className="text-2xl font-semibold flex items-center text-gray-800">
-                <User size={22} className="mr-2 text-green-500" /> Personal Information
+              <h3 className="text-2xl md:text-3xl font-semibold flex items-center text-gray-800">
+                <User size={24} className="mr-2 text-yellow-500" /> Personal Information
               </h3>
-              <p className="text-gray-500 text-sm mt-1">Please provide your personal details to get started</p>
+              <p className="text-gray-500 text-sm md:text-base mt-1">Please provide your personal details to get started</p>
             </div>
             
-            <form onSubmit={handlePersonalInfoSubmit} className="space-y-4">
+            <form onSubmit={handlePersonalInfoSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
                   <input
                     type="text"
                     id="firstName"
@@ -325,14 +324,14 @@ const Apply: React.FC = () => {
                     placeholder="Enter your first name"
                   />
                   {errors.firstName && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.firstName}
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle size={14} className="mr-1" /> {errors.firstName}
                     </p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
                   <input
                     type="text"
                     id="lastName"
@@ -343,17 +342,17 @@ const Apply: React.FC = () => {
                     placeholder="Enter your last name"
                   />
                   {errors.lastName && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.lastName}
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle size={14} className="mr-1" /> {errors.lastName}
                     </p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Mail size={16} className="text-gray-400" />
+                      <Mail size={18} className="text-gray-400" />
                     </div>
                     <input
                       type="email"
@@ -366,17 +365,17 @@ const Apply: React.FC = () => {
                     />
                   </div>
                   {errors.email && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.email}
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle  className="mr-1" /> {errors.email}
                     </p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Phone size={16} className="text-gray-400" />
+                      <Phone size={18} className="text-gray-400" />
                     </div>
                     <input
                       type="tel"
@@ -389,14 +388,14 @@ const Apply: React.FC = () => {
                     />
                   </div>
                   {errors.phoneNumber && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.phoneNumber}
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle  className="mr-1" /> {errors.phoneNumber}
                     </p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                  <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
                   <select
                     id="gender"
                     name="gender"
@@ -410,17 +409,17 @@ const Apply: React.FC = () => {
                     <option value="Other">Other</option>
                   </select>
                   {errors.gender && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.gender}
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle  className="mr-1" /> {errors.gender}
                     </p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                  <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Calendar size={16} className="text-gray-400" />
+                      <Calendar size={18} className="text-gray-400" />
                     </div>
                     <input
                       type="date"
@@ -432,17 +431,17 @@ const Apply: React.FC = () => {
                     />
                   </div>
                   {errors.dateOfBirth && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.dateOfBirth}
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle className="mr-1" /> {errors.dateOfBirth}
                     </p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="academicAchievement" className="block text-sm font-medium text-gray-700 mb-1">Highest Academic Achievement</label>
+                  <label htmlFor="academicAchievement" className="block text-sm font-medium text-gray-700 mb-2">Highest Academic Achievement</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Award size={16} className="text-gray-400" />
+                      <Award size={18} className="text-gray-400" />
                     </div>
                     <select
                       id="academicAchievement"
@@ -453,20 +452,20 @@ const Apply: React.FC = () => {
                     >
                       <option value="" disabled>Select your highest education</option>
                       <option value="High School">High School</option>
-                      <option value="Bachelor's Degree">Bachelors Degree</option>
-                      <option value="Master's Degree">Masters Degree</option>
+                      <option value="Bachelor's Degree">Bachelor's Degree</option>
+                      <option value="Master's Degree">Master's Degree</option>
                       <option value="PhD">PhD</option>
                     </select>
                   </div>
                   {errors.academicAchievement && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.academicAchievement}
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle  className="mr-1" /> {errors.academicAchievement}
                     </p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="ageRange" className="block text-sm font-medium text-gray-700 mb-1">Age Range</label>
+                  <label htmlFor="ageRange" className="block text-sm font-medium text-gray-700 mb-2">Age Range</label>
                   <select
                     id="ageRange"
                     name="ageRange"
@@ -481,17 +480,17 @@ const Apply: React.FC = () => {
                     <option value="46+">46+</option>
                   </select>
                   {errors.ageRange && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.ageRange}
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle  className="mr-1" /> {errors.ageRange}
                     </p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                  <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">Country</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Globe size={16} className="text-gray-400" />
+                      <Globe size={18} className="text-gray-400" />
                     </div>
                     <select
                       id="country"
@@ -509,14 +508,14 @@ const Apply: React.FC = () => {
                     </select>
                   </div>
                   {errors.country && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.country}
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle  className="mr-1" /> {errors.country}
                     </p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">State/Province</label>
+                  <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-2">State/Province</label>
                   <select
                     id="state"
                     name="state"
@@ -532,14 +531,14 @@ const Apply: React.FC = () => {
                     <option value="Other">Other</option>
                   </select>
                   {errors.state && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.state}
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle  className="mr-1" /> {errors.state}
                     </p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="howDidYouHear" className="block text-sm font-medium text-gray-700 mb-1">How Did You Hear About Us?</label>
+                  <label htmlFor="howDidYouHear" className="block text-sm font-medium text-gray-700 mb-2">How Did You Hear About Us?</label>
                   <select
                     id="howDidYouHear"
                     name="howDidYouHear"
@@ -555,14 +554,14 @@ const Apply: React.FC = () => {
                     <option value="Other">Other</option>
                   </select>
                   {errors.howDidYouHear && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.howDidYouHear}
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle  className="mr-1" /> {errors.howDidYouHear}
                     </p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="advisorId" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="advisorId" className="block text-sm font-medium text-gray-700 mb-2">
                     Advisor ID <span className="text-gray-400 text-xs">(Optional)</span>
                   </label>
                   <input
@@ -580,9 +579,9 @@ const Apply: React.FC = () => {
               <div className="flex justify-end mt-8">
                 <button 
                   type="submit" 
-                  className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 flex items-center font-medium shadow-md"
+                  className="bg-yellow-400 text-gray-900 px-6 py-3 rounded-xl hover:bg-yellow-500 transition-colors duration-300 flex items-center font-medium shadow-md"
                 >
-                  Next: Course Selection <ChevronRight size={18} className="ml-2" />
+                  Next: Course Selection <ChevronRight size={20} className="ml-2" />
                 </button>
               </div>
             </form>
@@ -591,18 +590,18 @@ const Apply: React.FC = () => {
 
         {/* Step 2: Course Selection */}
         {step === 2 && (
-          <div className={`bg-white shadow-lg rounded-xl p-6 md:p-8 ${animateStep ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-4'} transition-all duration-500`}>
+          <div className={`bg-white shadow-xl rounded-xl p-6 md:p-8 ${animateStep ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-4'} transition-all duration-500`}>
             <div className="border-b border-gray-100 pb-4 mb-6">
-              <h3 className="text-2xl font-semibold flex items-center text-gray-800">
-                <Book size={22} className="mr-2 text-green-500" /> Course Selection
+              <h3 className="text-2xl md:text-3xl font-semibold flex items-center text-gray-800">
+                <Book size={24} className="mr-2 text-yellow-500" /> Course Selection
               </h3>
-              <p className="text-gray-500 text-sm mt-1">Select your preferred course and payment options</p>
+              <p className="text-gray-500 text-sm md:text-base mt-1">Select your preferred course and payment options</p>
             </div>
             
             <form onSubmit={handleCourseInfoSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="md:col-span-2">
-                  <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-1">Choose Your Course</label>
+                  <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-2">Choose Your Course</label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                     {[
                       { value: 'Frontend Engineering', label: 'Frontend Engineering', description: 'Learn modern web development' },
@@ -612,18 +611,18 @@ const Apply: React.FC = () => {
                     ].map((option) => (
                       <div 
                         key={option.value} 
-                        className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                        className={`border rounded-xl p-4 cursor-pointer transition-all duration-300 ${
                           courseInfo.course === option.value 
-                            ? 'border-green-500 bg-green-50 ring-2 ring-green-200' 
-                            : 'border-gray-200 hover:border-green-300'
+                            ? 'border-yellow-400 bg-yellow-50 ring-2 ring-yellow-200' 
+                            : 'border-gray-200 hover:border-yellow-300'
                         }`}
                         onClick={() => setCourseInfo(prev => ({ ...prev, course: option.value }))}
                       >
                         <div className="flex items-start">
-                          <div className={`w-5 h-5 rounded-full flex items-center justify-center mr-3 mt-1 ${
-                            courseInfo.course === option.value ? 'bg-green-500' : 'border border-gray-300'
+                          <div className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 mt-1 ${
+                            courseInfo.course === option.value ? 'bg-yellow-400' : 'border-2 border-gray-300'
                           }`}>
-                            {courseInfo.course === option.value && <CheckCircle size={16} className="text-white" />}
+                            {courseInfo.course === option.value && <CheckCircle size={16} className="text-gray-900" />}
                           </div>
                           <div>
                             <div className="font-medium text-gray-800">{option.label}</div>
@@ -635,13 +634,13 @@ const Apply: React.FC = () => {
                   </div>
                   {errors.course && (
                     <p className="text-red-500 text-xs mt-2 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.course}
+                      <AlertCircle  className="mr-1" /> {errors.course}
                     </p>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="cohort" className="block text-sm font-medium text-gray-700 mb-1">Cohort (Start Month)</label>
+                  <label htmlFor="cohort" className="block text-sm font-medium text-gray-700 mb-2">Cohort (Start Month)</label>
                   <select
                     id="cohort"
                     name="cohort"
@@ -656,25 +655,25 @@ const Apply: React.FC = () => {
                     <option value="October 2025">October 2025</option>
                   </select>
                   {errors.cohort && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.cohort}
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle  className="mr-1" /> {errors.cohort}
                     </p>
                   )}
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Class Format</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Class Format</label>
                   <div className="flex space-x-4 mt-2">
                     {[
-                      { value: 'Virtual Class', label: 'Virtual Class', icon: <Globe size={18} /> },
-                      { value: 'Physical Class', label: 'Physical Class', icon: <Book size={18} /> }
+                      { value: 'Virtual Class', label: 'Virtual Class', icon: <Globe size={20} /> },
+                      { value: 'Physical Class', label: 'Physical Class', icon: <Book size={20} /> }
                     ].map((option) => (
                       <div 
                         key={option.value}
-                        className={`flex-1 border rounded-lg p-3 cursor-pointer transition-all flex items-center ${
+                        className={`flex-1 border rounded-xl p-4 cursor-pointer transition-all duration-300 flex items-center ${
                           courseInfo.classFormat === option.value 
-                            ? 'border-green-500 bg-green-50' 
-                            : 'border-gray-200 hover:border-green-300'
+                            ? 'border-yellow-400 bg-yellow-50' 
+                            : 'border-gray-200 hover:border-yellow-300'
                         }`}
                         onClick={() => setCourseInfo(prev => ({ ...prev, classFormat: option.value }))}
                       >
@@ -687,40 +686,40 @@ const Apply: React.FC = () => {
                           onChange={handleCourseInfoChange}
                           className="hidden"
                         />
-                        <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                          courseInfo.classFormat === option.value ? 'border-green-500' : 'border-gray-300'
+                        <div className={`w-6 h-6 rounded-full border flex items-center justify-center ${
+                          courseInfo.classFormat === option.value ? 'border-yellow-400' : 'border-gray-300'
                         }`}>
                           {courseInfo.classFormat === option.value && (
-                            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                            <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
                           )}
                         </div>
-                        <div className="ml-2 flex items-center">
-                          <span className="mr-2 text-green-500">{option.icon}</span>
-                          <span className="text-sm">{option.label}</span>
+                        <div className="ml-3 flex items-center">
+                          <span className="mr-2 text-yellow-500">{option.icon}</span>
+                          <span className="text-sm font-medium">{option.label}</span>
                         </div>
                       </div>
                     ))}
                   </div>
                   {errors.classFormat && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.classFormat}
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle className="mr-1" /> {errors.classFormat}
                     </p>
                   )}
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Payment Plan</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Payment Plan</label>
                   <div className="flex space-x-4 mt-2">
                     {[
-                      { value: 'Full Payment', label: 'Full Payment', icon: <CreditCard size={18} /> },
-                      { value: 'Part Payment', label: 'Installments', icon: <Calendar size={18} /> }
+                      { value: 'Full Payment', label: 'Full Payment', icon: <CreditCard size={20} /> },
+                      { value: 'Part Payment', label: 'Installments', icon: <Calendar size={20} /> }
                     ].map((option) => (
                       <div 
                         key={option.value}
-                        className={`flex-1 border rounded-lg p-3 cursor-pointer transition-all flex items-center ${
+                        className={`flex-1 border rounded-xl p-4 cursor-pointer transition-all duration-300 flex items-center ${
                           courseInfo.paymentPlan === option.value 
-                            ? 'border-green-500 bg-green-50' 
-                            : 'border-gray-200 hover:border-green-300'
+                            ? 'border-yellow-400 bg-yellow-50' 
+                            : 'border-gray-200 hover:border-yellow-300'
                         }`}
                         onClick={() => setCourseInfo(prev => ({ ...prev, paymentPlan: option.value }))}
                       >
@@ -733,29 +732,29 @@ const Apply: React.FC = () => {
                           onChange={handleCourseInfoChange}
                           className="hidden"
                         />
-                        <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                          courseInfo.paymentPlan === option.value ? 'border-green-500' : 'border-gray-300'
+                        <div className={`w-6 h-6 rounded-full border flex items-center justify-center ${
+                          courseInfo.paymentPlan === option.value ? 'border-yellow-400' : 'border-gray-300'
                         }`}>
                           {courseInfo.paymentPlan === option.value && (
-                            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                            <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
                           )}
                         </div>
-                        <div className="ml-2 flex items-center">
-                          <span className="mr-2 text-green-500">{option.icon}</span>
-                          <span className="text-sm">{option.label}</span>
+                        <div className="ml-3 flex items-center">
+                          <span className="mr-2 text-yellow-500">{option.icon}</span>
+                          <span className="text-sm font-medium">{option.label}</span>
                         </div>
                       </div>
                     ))}
                   </div>
                   {errors.paymentPlan && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.paymentPlan}
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle  className="mr-1" /> {errors.paymentPlan}
                     </p>
                   )}
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Payment Currency</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Payment Currency</label>
                   <div className="grid grid-cols-3 gap-3 mt-2">
                     {[
                       { value: 'NGN', label: 'NGN', icon: '₦' },
@@ -764,10 +763,10 @@ const Apply: React.FC = () => {
                     ].map((option) => (
                       <div 
                         key={option.value}
-                        className={`border rounded-lg p-3 cursor-pointer transition-all flex items-center justify-center ${
+                        className={`border rounded-xl p-4 cursor-pointer transition-all duration-300 flex items-center justify-center ${
                           courseInfo.currency === option.value 
-                            ? 'border-green-500 bg-green-50' 
-                            : 'border-gray-200 hover:border-green-300'
+                            ? 'border-yellow-400 bg-yellow-50' 
+                            : 'border-gray-200 hover:border-yellow-300'
                         }`}
                         onClick={() => setCourseInfo(prev => ({ ...prev, currency: option.value }))}
                       >
@@ -781,23 +780,23 @@ const Apply: React.FC = () => {
                           className="hidden"
                         />
                         <div className="flex items-center">
-                          <span className={`mr-2 font-medium ${courseInfo.currency === option.value ? 'text-green-500' : 'text-gray-600'}`}>
+                          <span className={`mr-2 font-medium ${courseInfo.currency === option.value ? 'text-yellow-500' : 'text-gray-600'}`}>
                             {option.icon}
                           </span>
-                          <span className="text-sm">{option.label}</span>
+                          <span className="text-sm font-medium">{option.label}</span>
                         </div>
                       </div>
                     ))}
                   </div>
                   {errors.currency && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center">
-                      <AlertCircle size={12} className="mr-1" /> {errors.currency}
+                    <p className="text-red-500 text-xs mt-2 flex items-center">
+                      <AlertCircle  className="mr-1" /> {errors.currency}
                     </p>
                   )}
                 </div>
               </div>
               
-              <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                 <label htmlFor="voucher" className="block text-sm font-medium text-gray-700 mb-2">Have a discount voucher?</label>
                 <div className="flex">
                   <input
@@ -806,12 +805,12 @@ const Apply: React.FC = () => {
                     name="voucher"
                     value={courseInfo.voucher}
                     onChange={handleCourseInfoChange}
-                    className="flex-grow block p-3 border border-gray-200 rounded-l-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
+                    className="flex-grow block p-3 border border-gray-300 rounded-l-xl focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 outline-none transition-all duration-300"
                     placeholder="Enter voucher code (e.g. FREDMIND2025)"
                   />
                   <button
                     type="button"
-                    className="bg-green-600 text-white px-4 py-2 rounded-r-lg hover:bg-green-700 transition-colors duration-300 flex items-center"
+                    className="bg-yellow-400 text-gray-900 px-4 py-2 rounded-r-xl hover:bg-yellow-500 transition-colors duration-300 flex items-center font-medium"
                     onClick={handleApplyVoucher}
                   >
                     Apply
@@ -819,13 +818,13 @@ const Apply: React.FC = () => {
                 </div>
                 {voucherMessage && (
                   <p className={`text-xs mt-2 flex items-center ${voucherApplied ? 'text-green-500' : 'text-red-500'}`}>
-                    {voucherApplied ? <CheckCircle size={12} className="mr-1" /> : <AlertCircle size={12} className="mr-1" />}
+                    {voucherApplied ? <CheckCircle  className="mr-1" /> : <AlertCircle className="mr-1" />}
                     {voucherMessage}
                   </p>
                 )}
               </div>
               
-              <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+              <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100">
                 <div className="flex items-start">
                   <input
                     type="checkbox"
@@ -833,22 +832,22 @@ const Apply: React.FC = () => {
                     name="studentPolicy"
                     checked={courseInfo.studentPolicy}
                     onChange={handleCourseInfoChange}
-                    className="mt-1"
+                    className="mt-1 h-4 w-4 text-yellow-400 border-gray-300 rounded focus:ring-yellow-400"
                   />
                   <label htmlFor="studentPolicy" className="ml-2 text-sm text-gray-700">
-                    I agree to Fredmind Schools{' '}
-                    <Link href="#" className="text-green-600 hover:underline font-medium">
+                    I agree to Fredmind School's{' '}
+                    <Link href="#" className="text-yellow-600 hover:underline font-medium">
                       Terms of Service
                     </Link>{' '}
                     and{' '}
-                    <Link href="#" className="text-green-600 hover:underline font-medium">
+                    <Link href="#" className="text-yellow-600 hover:underline font-medium">
                       Privacy Policy
                     </Link>.
                   </label>
                 </div>
                 {errors.studentPolicy && (
-                  <p className="text-red-500 text-xs mt-1 flex items-center">
-                    <AlertCircle size={12} className="mr-1" /> {errors.studentPolicy}
+                  <p className="text-red-500 text-xs mt-2 flex items-center">
+                    <AlertCircle  className="mr-1" /> {errors.studentPolicy}
                   </p>
                 )}
               </div>
@@ -857,15 +856,15 @@ const Apply: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="bg-gray-100 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors duration-300 flex items-center font-medium"
+                  className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-200 transition-colors duration-300 flex items-center font-medium shadow-sm"
                 >
-                  <ChevronLeft size={18} className="mr-2" /> Back
+                  <ChevronLeft size={20} className="mr-2" /> Back
                 </button>
                 <button 
                   type="submit" 
-                  className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 flex items-center font-medium shadow-md"
+                  className="bg-yellow-400 text-gray-900 px-6 py-3 rounded-xl hover:bg-yellow-500 transition-colors duration-300 flex items-center font-medium shadow-md"
                 >
-                  Continue to Summary <ChevronRight size={18} className="ml-2" />
+                  Continue to Summary <ChevronRight size={20} className="ml-2" />
                 </button>
               </div>
             </form>
@@ -876,103 +875,103 @@ const Apply: React.FC = () => {
         {step === 3 && (
           <div className={`grid grid-cols-1 lg:grid-cols-3 gap-6 ${animateStep ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-4'} transition-all duration-500`}>
             <div className="lg:col-span-2">
-              <div className="bg-white shadow-lg rounded-xl p-6 md:p-8 mb-6">
+              <div className="bg-white shadow-xl rounded-xl p-6 md:p-8 mb-6">
                 <div className="border-b border-gray-100 pb-4 mb-6">
-                  <h3 className="text-2xl font-semibold flex items-center text-gray-800">
-                    <Info size={22} className="mr-2 text-green-500" /> Application Summary
+                  <h3 className="text-2xl md:text-3xl font-semibold flex items-center text-gray-800">
+                    <Info size={24} className="mr-2 text-yellow-500" /> Application Summary
                   </h3>
-                  <p className="text-gray-500 text-sm mt-1">Please review your information before proceeding to payment</p>
+                  <p className="text-gray-500 text-sm md:text-base mt-1">Please review your information before proceeding to payment</p>
                 </div>
                 
                 <div className="space-y-6">
                   <div>
-                    <h4 className="text-lg font-medium text-gray-800 mb-4 flex items-center">
-                      <User size={18} className="mr-2 text-green-500" /> Personal Information
+                    <h4 className="text-lg md:text-xl font-medium text-gray-800 mb-4 flex items-center">
+                      <User size={20} className="mr-2 text-yellow-500" /> Personal Information
                       <button 
                         type="button" 
                         onClick={() => setStep(1)} 
-                        className="ml-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded flex items-center hover:bg-gray-200 transition-colors"
+                        className="ml-auto text-sm bg-gray-100 text-gray-600 px-3 py-1.5 rounded-xl flex items-center hover:bg-gray-200 transition-colors duration-300"
                       >
-                        Edit <ChevronRight size={12} className="ml-1" />
+                        Edit <ChevronRight  className="ml-1" />
                       </button>
                     </h4>
-                    <div className="bg-gray-50 rounded-lg p-4 grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-6">
+                    <div className="bg-gray-50 rounded-xl p-4 grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
                       <div>
                         <p className="text-xs text-gray-500">Full Name</p>
-                        <p className="font-medium">{`${personalInfo.firstName} ${personalInfo.lastName}`}</p>
+                        <p className="font-medium text-gray-800">{`${personalInfo.firstName} ${personalInfo.lastName}`}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Email Address</p>
-                        <p className="font-medium">{personalInfo.email}</p>
+                        <p className="font-medium text-gray-800">{personalInfo.email}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Phone Number</p>
-                        <p className="font-medium">{personalInfo.phoneNumber}</p>
+                        <p className="font-medium text-gray-800">{personalInfo.phoneNumber}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Gender</p>
-                        <p className="font-medium">{personalInfo.gender}</p>
+                        <p className="font-medium text-gray-800">{personalInfo.gender}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Date of Birth</p>
-                        <p className="font-medium">{personalInfo.dateOfBirth}</p>
+                        <p className="font-medium text-gray-800">{personalInfo.dateOfBirth}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Age Range</p>
-                        <p className="font-medium">{personalInfo.ageRange}</p>
+                        <p className="font-medium text-gray-800">{personalInfo.ageRange}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Education</p>
-                        <p className="font-medium">{personalInfo.academicAchievement}</p>
+                        <p className="font-medium text-gray-800">{personalInfo.academicAchievement}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Location</p>
-                        <p className="font-medium">{`${personalInfo.state}, ${personalInfo.country}`}</p>
+                        <p className="font-medium text-gray-800">{`${personalInfo.state}, ${personalInfo.country}`}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Referral Source</p>
-                        <p className="font-medium">{personalInfo.howDidYouHear}</p>
+                        <p className="font-medium text-gray-800">{personalInfo.howDidYouHear}</p>
                       </div>
                       {personalInfo.advisorId && (
                         <div>
                           <p className="text-xs text-gray-500">Advisor ID</p>
-                          <p className="font-medium">{personalInfo.advisorId}</p>
+                          <p className="font-medium text-gray-800">{personalInfo.advisorId}</p>
                         </div>
                       )}
                     </div>
                   </div>
                   
                   <div>
-                    <h4 className="text-lg font-medium text-gray-800 mb-4 flex items-center">
-                      <Book size={18} className="mr-2 text-green-500" /> Course Details
+                    <h4 className="text-lg md:text-xl font-medium text-gray-800 mb-4 flex items-center">
+                      <Book size={20} className="mr-2 text-yellow-500" /> Course Details
                       <button 
                         type="button" 
                         onClick={() => setStep(2)} 
-                        className="ml-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded flex items-center hover:bg-gray-200 transition-colors"
+                        className="ml-auto text-sm bg-gray-100 text-gray-600 px-3 py-1.5 rounded-xl flex items-center hover:bg-gray-200 transition-colors duration-300"
                       >
-                        Edit <ChevronRight size={12} className="ml-1" />
+                        Edit <ChevronRight className="ml-1" />
                       </button>
                     </h4>
-                    <div className="bg-gray-50 rounded-lg p-4 grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-6">
+                    <div className="bg-gray-50 rounded-xl p-4 grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
                       <div>
                         <p className="text-xs text-gray-500">Selected Course</p>
-                        <p className="font-medium">{courseInfo.course}</p>
+                        <p className="font-medium text-gray-800">{courseInfo.course}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Cohort</p>
-                        <p className="font-medium">{courseInfo.cohort}</p>
+                        <p className="font-medium text-gray-800">{courseInfo.cohort}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Class Format</p>
-                        <p className="font-medium">{courseInfo.classFormat}</p>
+                        <p className="font-medium text-gray-800">{courseInfo.classFormat}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Payment Plan</p>
-                        <p className="font-medium">{courseInfo.paymentPlan}</p>
+                        <p className="font-medium text-gray-800">{courseInfo.paymentPlan}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Currency</p>
-                        <div className="flex items-center font-medium">
+                        <div className="flex items-center font-medium text-gray-800">
                           <span>{getCurrencySymbol(courseInfo.currency)}</span>
                           <span className="ml-1">{courseInfo.currency}</span>
                         </div>
@@ -980,10 +979,10 @@ const Apply: React.FC = () => {
                       {courseInfo.voucher && voucherApplied && (
                         <div>
                           <p className="text-xs text-gray-500">Voucher</p>
-                          <p className="font-medium flex items-center">
+                          <p className="font-medium flex items-center text-gray-800">
                             {courseInfo.voucher}
                             <span className="text-green-500 ml-2 flex items-center text-xs">
-                              <CheckCircle size={12} className="mr-1" /> Applied
+                              <CheckCircle  className="mr-1" /> Applied
                             </span>
                           </p>
                         </div>
@@ -995,18 +994,18 @@ const Apply: React.FC = () => {
             </div>
             
             <div>
-              <div className="bg-white shadow-lg rounded-xl overflow-hidden sticky top-6">
-                <div className="bg-gradient-to-r from-green-600 to-indigo-700 p-4 text-white">
-                  <h3 className="text-lg font-semibold flex items-center">
-                    <CreditCard size={20} className="mr-2" /> Payment Summary
+              <div className="bg-white shadow-xl rounded-xl overflow-hidden sticky top-6">
+                <div className="bg-gradient-to-r from-yellow-400 to-green-500 p-4 text-white">
+                  <h3 className="text-lg md:text-xl font-semibold flex items-center">
+                    <CreditCard size={22} className="mr-2" /> Payment Summary
                   </h3>
                 </div>
                 
                 <div className="p-6">
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <div className="flex justify-between py-2">
                       <span className="text-gray-600">Course Fee:</span>
-                      <span className="font-medium">{`${paymentInfo.currencySymbol}${paymentInfo.courseFee.toLocaleString()}`}</span>
+                      <span className="font-medium text-gray-800">{`${paymentInfo.currencySymbol}${paymentInfo.courseFee.toLocaleString()}`}</span>
                     </div>
                     
                     {voucherApplied && (
@@ -1018,7 +1017,7 @@ const Apply: React.FC = () => {
                     
                     <div className="flex justify-between py-2">
                       <span className="text-gray-600">Amount to Pay:</span>
-                      <span className="font-medium">
+                      <span className="font-medium text-gray-800">
                         {`${paymentInfo.currencySymbol}${voucherApplied 
                           ? (paymentInfo.amountToPay * 0.9).toLocaleString() 
                           : paymentInfo.amountToPay.toLocaleString()}`}
@@ -1028,11 +1027,11 @@ const Apply: React.FC = () => {
                     {courseInfo.paymentPlan === 'Part Payment' && (
                       <div className="flex justify-between py-2">
                         <span className="text-gray-600">Balance to Pay:</span>
-                        <span className="font-medium">{`${paymentInfo.currencySymbol}${paymentInfo.balanceToPay.toLocaleString()}`}</span>
+                        <span className="font-medium text-gray-800">{`${paymentInfo.currencySymbol}${paymentInfo.balanceToPay.toLocaleString()}`}</span>
                       </div>
                     )}
                     
-                    <div className="flex justify-between py-2 text-green-600">
+                    <div className="flex justify-between py-2 text-yellow-600">
                       <span>Amount Payable Now:</span>
                       <span className="font-medium">
                         {`${paymentInfo.currencySymbol}${voucherApplied 
@@ -1043,11 +1042,11 @@ const Apply: React.FC = () => {
                     
                     <div className="flex justify-between py-2">
                       <span className="text-gray-600">Transaction Fee:</span>
-                      <span className="font-medium">{`${paymentInfo.currencySymbol}${paymentInfo.transactionFee.toLocaleString()}`}</span>
+                      <span className="font-medium text-gray-800">{`${paymentInfo.currencySymbol}${paymentInfo.transactionFee.toLocaleString()}`}</span>
                     </div>
                     
-                    <div className="border-t border-gray-200 mt-2 pt-3">
-                      <div className="flex justify-between py-2 font-bold text-lg">
+                    <div className="border-t border-gray-200 mt-3 pt-4">
+                      <div className="flex justify-between py-2 font-bold text-lg text-gray-800">
                         <span>Total Due:</span>
                         <span>
                           {`${paymentInfo.currencySymbol}${voucherApplied 
@@ -1062,13 +1061,13 @@ const Apply: React.FC = () => {
                     <button 
                       type="submit" 
                       disabled={isSubmitting}
-                      className={`w-full px-4 py-3 rounded-lg flex items-center justify-center font-medium shadow-md transition-colors duration-300 ${
+                      className={`w-full px-4 py-3 rounded-xl flex items-center justify-center font-medium shadow-md transition-colors duration-300 ${
                         isSubmitting
                           ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                          : 'bg-green-600 text-white hover:bg-green-700'
+                          : 'bg-yellow-400 text-gray-900 hover:bg-yellow-500'
                       }`}
                     >
-                      <CreditCard size={18} className="mr-2" />
+                      <CreditCard size={20} className="mr-2" />
                       {isSubmitting
                         ? 'Processing...'
                         : `Pay ${paymentInfo.currencySymbol}${voucherApplied 
@@ -1079,25 +1078,25 @@ const Apply: React.FC = () => {
                   
                   <Link 
                     href="/support" 
-                    className="block w-full text-center bg-gray-100 text-gray-700 px-4 py-3 rounded-lg mt-3 hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center"
+                    className="block w-full text-center bg-gray-100 text-gray-700 px-4 py-3 rounded-xl mt-3 hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center shadow-sm"
                   >
-                    <HelpCircle size={18} className="mr-2" /> Need Help?
+                    <HelpCircle size={20} className="mr-2" /> Need Help?
                   </Link>
                   
                   <div className="flex justify-between mt-6">
                     <button
                       type="button"
                       onClick={() => setStep(2)}
-                      className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center mr-2"
+                      className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center mr-2 shadow-sm"
                     >
-                      <ChevronLeft size={16} className="mr-1" /> Back
+                      <ChevronLeft  className="mr-1" /> Back
                     </button>
                     <button
                       type="button"
                       onClick={() => setStep(1)}
-                      className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center"
+                      className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-200 transition-colors duration-300 flex items-center justify-center shadow-sm"
                     >
-                      <User size={16} className="mr-1" /> Edit All
+                      <User className="mr-1" /> Edit All
                     </button>
                   </div>
                 </div>
@@ -1107,7 +1106,7 @@ const Apply: React.FC = () => {
         )}
         
         {/* Footer */}
-        <div className="text-center text-gray-500 text-sm mt-8">
+        <div className="text-center text-gray-500 text-sm mt-10">
           © {new Date().getFullYear()} Fredmind School. All rights reserved.
         </div>
       </div>

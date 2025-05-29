@@ -99,10 +99,10 @@ const Hero: React.FC = () => {
       `}</style>
       <section className="container mx-auto px-6 py-16 md:py-24 bg-white">
         {/* Hero Title */}
-        <h1 className="text-4xl md:text-5xl font-bold text-center mb-8 leading-tight text-black animate-fadeIn">
-          Learn with Experts & Get Certified
+        <h1 className="text-5xl md:text-5xl font-bold text-center mb-8 leading-tight text-black animate-fadeIn">
+        Build a Globally Lucrative Career 
           <span className="block text-2xl md:text-3xl font-semibold text-gray-600 mt-2">
-            Build a Globally Relevant Career
+           Learn with experts | Get Certified | Access to Jobs
           </span>
         </h1>
 
