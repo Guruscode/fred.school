@@ -199,8 +199,18 @@ const Apply: React.FC = () => {
       } else {
         router.push('/success');
       }
-    } catch (error: any) {
-      setSubmissionError(error.message || 'Failed to submit application');
+    } catch (error: unknown) {
+      if (
+        error &&
+        typeof error === 'object' &&
+        error !== null &&
+        'message' in error &&
+        typeof (error as { message?: unknown }).message === 'string'
+      ) {
+        setSubmissionError((error as { message: string }).message);
+      } else {
+        setSubmissionError('Failed to submit application');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -443,8 +453,8 @@ const Apply: React.FC = () => {
                     >
                       <option value="" disabled>Select your highest education</option>
                       <option value="High School">High School</option>
-                      <option value="Bachelor's Degree">Bachelor's Degree</option>
-                      <option value="Master's Degree">Master's Degree</option>
+                      <option value="Bachelor's Degree">Bachelors Degree</option>
+                      <option value="Master's Degree">Masters Degree</option>
                       <option value="PhD">PhD</option>
                     </select>
                   </div>
@@ -826,7 +836,7 @@ const Apply: React.FC = () => {
                     className="mt-1"
                   />
                   <label htmlFor="studentPolicy" className="ml-2 text-sm text-gray-700">
-                    I agree to Fredmind School's{' '}
+                    I agree to Fredmind Schools{' '}
                     <Link href="#" className="text-green-600 hover:underline font-medium">
                       Terms of Service
                     </Link>{' '}

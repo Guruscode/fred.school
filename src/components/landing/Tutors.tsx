@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from 'next/image';
 
-// Sample tutors data - in a real application, you would fetch this from an API
+// Sample tutors data
 const tutorsData = [
   {
     id: 1,
@@ -15,7 +15,7 @@ const tutorsData = [
     students: 2453,
     courses: 8,
     biography: "Dr. Johnson has over 10 years of experience in web development and has worked with companies like Google and Microsoft. She specializes in modern JavaScript frameworks and responsive design.",
-    image: "/image2.jpg",
+    image: "/image1.jpg",
     availability: "Weekdays, 9AM-5PM",
     social: {
       twitter: "#",
@@ -51,7 +51,7 @@ const tutorsData = [
     students: 3127,
     courses: 10,
     biography: "Lisa is an award-winning designer with experience at top creative agencies. She combines artistic vision with technical expertise to create compelling designs that solve real-world problems.",
-    image: "/image2.jpg",
+    image: "/image3.jpg",
     availability: "Mon-Fri, 11AM-7PM",
     social: {
       twitter: "#",
@@ -69,7 +69,7 @@ const tutorsData = [
     students: 2104,
     courses: 7,
     biography: "Robert has led marketing campaigns for Fortune 500 companies and startups alike. He brings a data-driven approach to digital marketing, helping students understand both creative and analytical aspects.",
-    image: "/image2.jpg",
+    image: "/image4.jpg",
     availability: "Tue-Sat, 9AM-6PM",
     social: {
       twitter: "#",
@@ -117,153 +117,156 @@ const SocialIcon = ({ platform }: { platform: SocialPlatform }) => {
 const TutorsShowcase = () => {
   const [activeProfile, setActiveProfile] = useState(1);
   const activeTutor = tutorsData.find(tutor => tutor.id === activeProfile) || tutorsData[0];
-  
+
   return (
-    <div className="container mx-auto px-4 py-16 md:py-24">
+    <div className="container mx-auto px-4 py-16">
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.5s ease-out forwards;
+        }
+        .card-hover {
+          transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .card-hover:hover {
+          background-color: #f5f5f5;
+          transform: translateY(-2px);
+        }
+        .btn-hover {
+          transition: background-color 0.3s ease;
+        }
+        .btn-hover:hover {
+          background-color: #ca8a04;
+        }
+      `}</style>
+
       {/* Heading */}
-      <div className="mb-16 max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">
-          Learn from
-        </h2>
-        <div className="flex items-center">
-          <h3 className="text-3xl md:text-4xl font-bold text-gray-900">Our <span className="text-orange-500">expert tutors</span></h3>
-          <div className="h-1 w-12 bg-emerald-500 ml-4"></div>
-        </div>
+      <div className="mb-12 max-w-6xl mx-auto animate-fadeIn">
+        <h2 className="text-3xl font-bold text-black">Our Expert Tutors</h2>
+        <div className="h-1 w-12 bg-yellow-500 mt-2"></div>
       </div>
-      
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Tutor Profile Cards - Click to view details */}
-        <div className="col-span-1  lg:col-span-1  space-y-4 order-2 lg:order-1 ">
+
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Tutor Profile Cards */}
+        <div className="col-span-1 space-y-4 order-2 lg:order-1">
           {tutorsData.map(tutor => (
-            <div 
+            <div
               key={tutor.id}
               onClick={() => setActiveProfile(tutor.id)}
-              className={`flex items-center p-4 rounded-xl cursor-pointer transition-all duration-300 ${
-                activeProfile === tutor.id 
-                  ? "bg-emerald-500 text-white shadow-lg transform scale-105" 
-                  : "bg-white hover:bg-gray-100 shadow"
+              className={`flex items-center p-4 rounded-md bg-white shadow-sm card-hover cursor-pointer ${
+                activeProfile === tutor.id ? "border-l-4 border-yellow-500" : "border-l-4 border-transparent"
               }`}
             >
-             <Image
+              <Image
                 src={tutor.image}
                 alt={tutor.name}
-                width={200} // replace with your actual image width
-                height={200} // replace with your actual image height
-                 className="w-16 h-16 rounded-full object-cover"
+                width={64}
+                height={64}
+                className="w-16 h-16 rounded-full object-cover"
               />
-
               <div className="ml-4">
-                <h4 className={`font-semibold ${activeProfile === tutor.id ? "text-white" : "text-gray-800"}`}>
-                  {tutor.name}
-                </h4>
-                <p className={`text-sm ${activeProfile === tutor.id ? "text-white" : "text-gray-600"}`}>
-                  {tutor.title}
-                </p>
+                <h4 className="font-semibold text-black">{tutor.name}</h4>
+                <p className="text-sm text-gray-600">{tutor.title}</p>
                 <div className="flex items-center mt-1">
                   {[...Array(5)].map((_, i) => (
-                    <svg 
-                      key={i} 
-                      className={`w-3 h-3 ${
-                        i < Math.floor(tutor.rating) 
-                          ? activeProfile === tutor.id ? "text-white" : "text-yellow-400" 
-                          : activeProfile === tutor.id ? "text-emerald-300" : "text-gray-300"
-                      }`}
-                      fill="currentColor" 
+                    <svg
+                      key={i}
+                      className={`w-3 h-3 ${i < Math.floor(tutor.rating) ? "text-yellow-500" : "text-gray-300"}`}
+                      fill="currentColor"
                       viewBox="0 0 20 20"
                     >
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
-                  <span className={`text-xs ml-1 ${activeProfile === tutor.id ? "text-white" : "text-gray-600"}`}>
-                    ({tutor.reviews})
-                  </span>
+                  <span className="text-xs ml-1 text-gray-600">({tutor.reviews})</span>
                 </div>
               </div>
             </div>
           ))}
         </div>
-        
+
         {/* Detailed Active Tutor Profile */}
         <div className="col-span-1 lg:col-span-2 order-1 lg:order-2">
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-            <div className="relative h-48 bg-emerald-500">
-              <div className="absolute -bottom-16 left-8">
+          <div className="bg-white rounded-lg shadow-md p-6 animate-fadeIn">
+            <div className="flex items-center mb-6">
               <Image
-              src={activeTutor.image}
-              alt={activeTutor.name}
-              width={200} // replace with your actual image width
-              height={200} // replace with your actual image height
-             className="w-32 h-32 rounded-full border-4 border-white object-cover"
-            />
+                src={activeTutor.image}
+                alt={activeTutor.name}
+                width={80}
+                height={80}
+                className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
+              />
+              <div className="ml-4">
+                <h2 className="text-xl font-bold text-black">{activeTutor.name}</h2>
+                <p className="text-gray-600">{activeTutor.title}</p>
+              </div>
+            </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+              <div className="text-center">
+                <p className="text-lg font-semibold text-black">{activeTutor.courses}</p>
+                <p className="text-sm text-gray-600">Courses</p>
+              </div>
+              <div className="text-center">
+                <p className="text-lg font-semibold text-black">{activeTutor.students.toLocaleString()}</p>
+                <p className="text-sm text-gray-600">Students</p>
+              </div>
+              <div className="text-center">
+                <p className="text-lg font-semibold text-black">{activeTutor.reviews}</p>
+                <p className="text-sm text-gray-600">Reviews</p>
               </div>
             </div>
-            
-            <div className="pt-20 px-8 pb-8">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800">{activeTutor.name}</h2>
-                  <p className="text-emerald-500 font-medium">{activeTutor.title}</p>
-                </div>
-                
-                <div className="flex mt-4 md:mt-0">
-                  {Object.keys(activeTutor.social).map(platform => (
-                    <a 
-                      key={platform} 
-                      href={activeTutor.social[platform as SocialPlatform]} 
-                      className="text-gray-400 hover:text-emerald-500 mr-4"
-                      aria-label={platform}
-                    >
-                      <SocialIcon platform={platform as SocialPlatform} />
-                    </a>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div className="bg-gray-50 p-4 rounded-lg text-center">
-                  <p className="text-2xl font-bold text-emerald-500">{activeTutor.courses}</p>
-                  <p className="text-gray-600 text-sm">Courses</p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg text-center">
-                  <p className="text-2xl font-bold text-emerald-500">{activeTutor.students.toLocaleString()}</p>
-                  <p className="text-gray-600 text-sm">Students</p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg text-center">
-                  <p className="text-2xl font-bold text-emerald-500">{activeTutor.reviews}</p>
-                  <p className="text-gray-600 text-sm">Reviews</p>
-                </div>
-              </div>
-              
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-2 text-gray-800">Biography</h3>
-                <p className="text-gray-600">{activeTutor.biography}</p>
-              </div>
-              
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-2 text-gray-800">Expertise</h3>
-                <div className="flex flex-wrap gap-2">
-                  {activeTutor.expertise.map((skill, index) => (
-                    <span 
-                      key={index} 
-                      className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                <div className="mb-4 sm:mb-0">
-                  <h3 className="text-lg font-semibold text-gray-800">Availability</h3>
-                  <p className="text-gray-600">{activeTutor.availability}</p>
-                </div>
-                <button className="bg-emerald-500 hover:bg-emerald-600 text-white py-2 px-6 rounded-lg transition-colors duration-200">
-                  Schedule Session
-                </button>
+
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-black mb-2">Biography</h3>
+              <p className="text-gray-600">{activeTutor.biography}</p>
+            </div>
+
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-black mb-2">Expertise</h3>
+              <div className="flex flex-wrap gap-2">
+                {activeTutor.expertise.map((skill, index) => (
+                  <span
+                    key={index}
+                    className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm"
+                  >
+                    {skill}
+                  </span>
+                ))}
               </div>
             </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+              <div>
+                <h3 className="text-lg font-semibold text-black">Availability</h3>
+                <p className="text-gray-600">{activeTutor.availability}</p>
+              </div>
+              <div className="flex mt-4 sm:mt-0">
+                {Object.keys(activeTutor.social).map(platform => (
+                  <a
+                    key={platform}
+                    href={activeTutor.social[platform as SocialPlatform]}
+                    className="text-gray-500 hover:text-yellow-500 mr-4"
+                    aria-label={platform}
+                  >
+                    <SocialIcon platform={platform as SocialPlatform} />
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <button className="w-full sm:w-auto bg-yellow-500 text-black py-2 px-6 rounded-md btn-hover">
+              Schedule Session
+            </button>
           </div>
         </div>
       </div>

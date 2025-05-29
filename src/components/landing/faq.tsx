@@ -20,7 +20,7 @@ const FAQSection: React.FC = () => {
       answer: (
         <>
           All you have to do is sign up{" "}
-          <Link href="/school" className="text-blue-600 hover:underline">
+          <Link href="/school" className="text-yellow-500 hover:underline">
             here
           </Link>{" "}
           and follow the instructions!
@@ -32,11 +32,11 @@ const FAQSection: React.FC = () => {
       answer: (
         <>
           We have created{" "}
-          <Link href="/guide" className="text-blue-600 hover:underline">
+          <Link href="/guide" className="text-yellow-500 hover:underline">
             this guide
           </Link>{" "}
           to help you through this process. If you’re still clueless, you can reach out to us{" "}
-          <a href="mailto:info@fredmindschool.com" className="text-blue-600 hover:underline">
+          <a href="mailto:info@fredmindschool.com" className="text-yellow-500 hover:underline">
             here
           </a>
           .
@@ -52,7 +52,7 @@ const FAQSection: React.FC = () => {
       answer: (
         <>
           Tuition varies by course. Check out yours{" "}
-          <Link href="/tuition" className="text-blue-600 hover:underline">
+          <Link href="/tuition" className="text-yellow-500 hover:underline">
             here
           </Link>
           .
@@ -76,10 +76,34 @@ const FAQSection: React.FC = () => {
   };
 
   return (
-    <section className="container mx-auto px-6 py-16 md:py-24">
+    <section className="container mx-auto px-6 py-16">
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.5s ease-out forwards;
+        }
+        .faq-hover {
+          transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .faq-hover:hover {
+          border-color: #eab308;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+      `}</style>
+
       {/* Section Title */}
-      <h2 className="text-4xl md:text-5xl font-bold text-gray-900 text-center leading-tight mb-12">
-        FAQs
+      <h2 className="text-3xl font-bold text-black text-center mb-12 animate-fadeIn">
+        Frequently Asked Questions
+        <div className="h-1 w-12 bg-yellow-500 mt-2 mx-auto"></div>
       </h2>
 
       {/* FAQ List */}
@@ -87,14 +111,15 @@ const FAQSection: React.FC = () => {
         {faqs.map((faq, index) => (
           <div
             key={index}
-            className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
+            className="border border-gray-200 rounded-md bg-white shadow-sm faq-hover animate-fadeIn"
+            style={{ animationDelay: `${index * 0.1}s` }}
           >
             {/* Question */}
             <button
               onClick={() => toggleFAQ(index)}
-              className="w-full flex justify-between items-center p-5 text-left focus:outline-none"
+              className="w-full flex justify-between items-center p-4 text-left focus:outline-none"
             >
-              <span className="text-lg font-semibold text-gray-900">{faq.question}</span>
+              <span className="text-lg font-semibold text-black">{faq.question}</span>
               <ChevronDown
                 size={20}
                 className={`text-gray-600 transform transition-transform duration-300 ${
@@ -106,7 +131,7 @@ const FAQSection: React.FC = () => {
             {/* Answer */}
             <div
               className={`overflow-hidden transition-all duration-300 ${
-                openIndex === index ? "max-h-96 p-5" : "max-h-0"
+                openIndex === index ? "max-h-96 p-4" : "max-h-0"
               }`}
             >
               <p className="text-gray-600 text-base leading-relaxed">{faq.answer}</p>
